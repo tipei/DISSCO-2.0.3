@@ -193,13 +193,22 @@ public:
     *	\param v The value to set the parameter to
     **/
     void setPartialParam(PartialDynamicParam p, m_value_type v);
-
-
+    
     /**
     *	This function iterates through the partials, calling getParam on them.
     *	\param p The PartialDynamicParam to get the envelope which was used on it
     **/
     void getPartialParamEnv(PartialDynamicParam p);
+    /**
+    * This function changes the parameters resolved around detune
+    *    \param direction, DETUNE_DIRECTION
+    *    \param speed, DETUNE_SPREAD
+    **/
+    void setDetune(double direction, double spead);
+    /** 
+    This function compute the corresponding detune velocity based on frequencies of partials
+    **/
+    void computeDetune();
 
     /**
     *	This returns a MultiTrack object of the rendered partial.
@@ -257,10 +266,17 @@ public:
 private:
   
     /**
-    *	This function creates a detuning envelope.
+    *	This function creates a detuning envelope
+	 when exponentially interpolated.
     *	\param env The envelope
     **/
     void setup_detuning_env(ExponentialInterpolator *env);
+    /**
+    *   This function creates a detuning envelope
+         when linearly interpolated(DETUNE_VELOCITY == 0.5).
+    *   \param env The envelope
+    **/
+    void setup_detuning_env(LinearInterpolator *detuning_env); 
     
     /**
     *	Pointer to a filter object that will apply filter to this sound
