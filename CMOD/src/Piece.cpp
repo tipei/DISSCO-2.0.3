@@ -233,6 +233,7 @@ Piece::Piece(string _workingPath, string _projectTitle){
   string disscoFile = _projectTitle+ ".dissco";
   parser->parse(disscoFile.c_str());
 
+  cerr << "just to debug and see if the problem " << endl;
   //get the parsed DOM Document and read the configuration
   DOMDocument* xmlDocument = parser->getDocument();
   DOMElement* root = xmlDocument->getDocumentElement();
