@@ -3609,14 +3609,12 @@ void FunctionGenerator::function_list_combo_changed(){
       else if (function == functionREV_Simple){
         alignment->remove(); //remove the current parameter box
         attributesRefBuilder->get_widget("REV_SimpleVBox", vbox);
-        alignment->add (*vbox); //add random vbox in
-        //reset all data
-	// TEJUS 4/19/21: Since REV_Simple takes by partials, the "room size" box at the beginning of the window
-	// was removed
-        // attributesRefBuilder->get_widget(
-        //   "REV_SimpleEntry", entry);
-        // entry->set_text("0.5");
-        // REV_SimpleEntryTextChanged();
+        alignment->add (*vbox); //add vbox in
+
+	// Ensure there is one sound box upon inserting reverb for the first time
+	// Otherwise, you get stuck!
+	REVInsertPartial();
+	REVApplyByRadioButtonClicked();
         set_position(Gtk::WIN_POS_CENTER_ALWAYS);
         resize(400,300);
       }
@@ -7640,7 +7638,9 @@ void FunctionGenerator::REVPartialAlignment::funButtonClicked(){
 
 
 void FunctionGenerator::REVPartialAlignment::insertPartialButtonClicked(){
-  parent->REVInsertPartial();
+  // Only use the insert button if in Partials mode
+  if (parent->REVApplyFlag==1)
+    parent->REVInsertPartial();
 }
 
 
