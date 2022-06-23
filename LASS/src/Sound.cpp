@@ -157,6 +157,7 @@ void Sound::computeDetune(){
 	} else{
 		setParam(DETUNE_VELOCITY,-value);
 	}
+	cout << "\t detune velocity is... " << value << endl;
 }
 
 //----------------------------------------------------------------------------//
