@@ -193,7 +193,7 @@
         <child>
           <object class="GtkLabel" id="label5">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Detune Spread</property>
+            <property name="label" translatable="yes">Amp value Envelope</property>
           </object>
           <packing>
             <property name="expand">False</property>
