@@ -259,7 +259,7 @@ public:
    *    \param direction, DETUNE_DIRECTION
    *    \param speed, DETUNE_SPREAD
    **/
-   void setDetune(double direction, double spead);
+   void setDetune(double direction, double spread);
    /** 
    This function compute the corresponding detune velocity based on frequencies of partials
    **/

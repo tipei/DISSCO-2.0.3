@@ -999,8 +999,8 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
     arg = arg->GNES();
 
     Envelope* probEnv = NULL;
-    DOMElement *ampElement, *rateElement, *widthElement, *partialResultStringElement;
-    string ampStr, rateStr, widthStr, probStr, partialResultStr;
+    DOMElement *ampElement,*spreadElement, *directionElement, *rateElement, *widthElement, *partialResultStringElement;
+    string ampStr, spreadStr, directionStr, rateStr, widthStr, probStr, partialResultStr;
 
     // Only evaluate the envelope if we apply by SOUND. Otherwise, may segfault on empty probability envelopes.
     if (applyHow == "SOUND") {
@@ -1009,10 +1009,14 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
     }
 
     ampElement = arg->GNES();
-    rateElement = ampElement->GNES();
+    spreadElement = ampElement->GNES();
+    directionElement = spreadElement->GNES();
+    rateElement = directionElement->GNES();
     widthElement = rateElement->GNES();
     partialResultStringElement = widthElement->GNES()->GNES();	
     ampStr = XMLTC(ampElement);
+    spreadStr = XMLTC(spreadElement);
+    directionStr = XMLTC(directionElement);
     rateStr = XMLTC(rateElement);
     widthStr = XMLTC(widthElement);
     partialResultStr = XMLTC(partialResultStringElement);
@@ -1037,13 +1041,17 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
         newMod.addValueEnv(env);
         delete env;
       }
-
+      if (spreadStr != ""){
+        newMod.addSpread(atof(spreadStr.c_str()));
+      }
+      if (directionStr != ""){
+        newMod.addDirection(atof(directionStr.c_str()));
+      }
       if (rateStr!=""){
         Envelope* env =  (Envelope*)utilities->evaluateObject(rateStr, this, eventEnv );
         newMod.addValueEnv(env);
         delete env;
       }
-
       if (widthStr!=""){
         Envelope* env =  (Envelope*)utilities->evaluateObject(widthStr, this, eventEnv );
         newMod.addValueEnv(env);
@@ -1059,7 +1067,7 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
         // mutually exclusive
         modMutEx[mutExGroup].push_back(newMod);
       }
-  
+      newMod.applyModifier(s);
       delete probEnv;
     }
     else if (applyHow == "PARTIAL") {

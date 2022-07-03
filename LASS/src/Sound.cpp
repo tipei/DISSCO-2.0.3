@@ -121,13 +121,13 @@ void Sound::setPartialParam(PartialDynamicParam p, m_value_type v)
     }
 }
 //-----------------------------------------------------------------------------//
-void Sound::setDetune(double direction, double spead){
+void Sound::setDetune(double direction, double spread){
 	if ( direction < -1 or direction > 1 ){
 		cerr << "ERROR: Sound: out of range for DETUNE_DIRECTION." << endl;
 		return;
 	}
      setParam(DETUNE_DIRECTION,direction);
-     setParam(DETUNE_SPREAD,spead);
+     setParam(DETUNE_SPREAD,spread);
 	 setParam(DETUNE_FUNDAMENTAL, 1);
 }
 
@@ -152,12 +152,14 @@ void Sound::computeDetune(){
 	} else{
 		value = abs((frequency/i)/first);
 	}
-	if (getParam(DETUNE_DIRECTION) == 1){
+	cout << "detune direction is " << getParam(DETUNE_DIRECTION) << endl;
+	cout << "detune spread is " << getParam(DETUNE_SPREAD) << endl;
+	if (getParam(DETUNE_DIRECTION) > 0){
         setParam(DETUNE_VELOCITY,value);
 	} else{
 		setParam(DETUNE_VELOCITY,-value);
 	}
-	cout << "\t detune velocity is... " << value << endl;
+	cout << "\t detune velocity is... " << getParam(DETUNE_VELOCITY) << endl;
 }
 
 //----------------------------------------------------------------------------//

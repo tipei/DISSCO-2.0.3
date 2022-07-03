@@ -117,6 +117,15 @@ void Modifier::addValueEnv( Envelope* env ) {
 
 //----------------------------------------------------------------------------//
 
+void Modifier::addSpread(double spread_){
+  spread = spread_;
+}
+void Modifier::addDirection(double dir_){
+  direction = dir_;
+}
+
+//----------------------------------------------------------------------------//
+
 float Modifier::getProbability(double checkPoint) {
   if (checkPoint < 0 || checkPoint > 1) {
     cerr << "Modifier::getProbability -- Error: checkPt out of bounds;" << endl;
@@ -170,6 +179,9 @@ void Modifier::applyModifier(Sound* snd) {
 //----------------------------------------------------------------------------//
 
 void Modifier::applyModSound(Sound* snd) {
+  if (type == "DETUNE"){
+    snd->setDetune(direction, spread);
+  }
   if (type == "FREQUENCY" || type == "GLISSANDO"
       || type == "DETUNE" || type == "BEND") {
     snd->setPartialParam(FREQ_ENV, *(env_values[0]));
@@ -200,6 +212,13 @@ void Modifier::applyModSound(Sound* snd) {
 //----------------------------------------------------------------------------//
 
 void Modifier::applyModPartial(Sound* snd) {
+  cout <<"Anything in here" << direction << " : "<< spread << endl;
+  snd->setDetune(direction, spread);
+  cout << "what is the type: "<< type << endl;
+  if (type == "DETUNE"){
+    cout <<"Anything in here" << direction << " : "<< spread << endl;
+    snd->setDetune(direction, spread);
+  }
   if (type == "FREQUENCY" || type == "GLISSANDO"
       || type == "DETUNE" || type == "BEND") {
     snd->get(partialNum).setParam(FREQ_ENV, *(env_values.front()));

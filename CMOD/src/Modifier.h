@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // CMOD includes
 #include "Libraries.h"
-
 #include "Define.h"
 
 //----------------------------------------------------------------------------//
@@ -30,6 +29,8 @@ class Modifier {
     string type;      // TREMOLO, VIBRATO, BEND, etc
     string applyHow;  // SOUND or PARTIAL
     Envelope* probEnv;
+    double spread;
+    double direction;
     deque<Envelope*> env_values; // values for the mod
     double checkPt;  // hold onto the checkpoint in case mod is WAVE_TYPE
     int partialNum;  // Partial num if applyHow==PARTIAL
@@ -72,6 +73,8 @@ class Modifier {
     **/
     void addValueEnv( Envelope* env );
 
+    void addSpread(double spread_);
+    void addDirection(double dir_);
    /**
      *  Get the probability (between 0 and 1) that this modifier will occur
      *  \param checkPoint the checkpoint (in time) of the probability

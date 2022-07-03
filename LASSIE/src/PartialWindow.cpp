@@ -456,7 +456,6 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
     attributesRefBuilder->get_widget("WidthEntry", entry);
     entry->set_sensitive(false);
   }
-
   attributesRefBuilder->get_widget(
     "ProbabilityEntry", entry);
   entry->signal_changed().connect(sigc::mem_fun(
