@@ -65,6 +65,12 @@ public:
   std::string  getAmpValue();
   void  setAmpValue(std::string _string);
 
+  std::string  getDetuneSpread();
+  void  setDetuneSpread(std::string _string);
+
+  std::string  getDetuneDirection();
+  void  setDetuneDirection(std::string _string);
+
   std::string  getRateValue();
   void  setRateValue(std::string _string);
 
@@ -73,6 +79,7 @@ public:
 
   std::string  getGroupName();
   void  setGroupName(std::string _string);
+
 
   std::string  getPartialNum();
   void  setPartialNum(std::string _string);
@@ -92,9 +99,12 @@ private:
   int applyHowFlag;
   std::string probability;
   std::string ampValue;
+  std::string detuneDirection;
+  std::string detuneSpread;
   std::string rateValue;
   std::string width;
   std::string groupName;
+
   // ADDED BY TEJUS
   std::string partialResultString;
 

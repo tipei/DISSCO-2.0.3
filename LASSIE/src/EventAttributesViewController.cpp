@@ -3979,6 +3979,10 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
 
   attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
   entry->set_text(modifier->getAmpValue());
+  attributesRefBuilder->get_widget("SpreadEntry", entry);
+  entry->set_text(modifier->getDetuneSpread());
+  attributesRefBuilder->get_widget("DirectionEntry", entry);
+  entry->set_text(modifier->getDetuneDirection());
 
   attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
   entry->set_text(modifier->getRateValue());
@@ -4053,6 +4057,14 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
 
   attributesRefBuilder->get_widget(
     "ampValueEnvelopeEntry", entry);
+  entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
+
+  attributesRefBuilder->get_widget(
+    "SpreadEntry", entry);
+  entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
+
+  attributesRefBuilder->get_widget(
+    "DirectionEntry", entry);
   entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
 
   attributesRefBuilder->get_widget(
@@ -4196,6 +4208,12 @@ void BottomEventModifierAlignment::saveToEvent(){
 
   attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
   modifier->setAmpValue(entry->get_text());
+
+  attributesRefBuilder->get_widget("SpreadEntry", entry);
+  modifier->setDetuneSpread(entry->get_text());
+
+  attributesRefBuilder->get_widget("DirectionEntry", entry);
+  modifier->setDetuneDirection(entry->get_text());
 
   // ADDED BY TEJUS
   // Will have to change: partialNum should only be set when the box is not grayed out

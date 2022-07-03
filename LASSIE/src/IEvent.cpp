@@ -931,6 +931,8 @@ EventBottomModifier::EventBottomModifier(){
   applyHowFlag = 0;
   probability = "";
   ampValue = "";
+  detuneSpread = "";
+  detuneDirection = "";
   rateValue = "";
   width = "";
   groupName = "";
@@ -988,6 +990,21 @@ std::string  EventBottomModifier::getGroupName(){
 void  EventBottomModifier::setGroupName(std::string _string){
   groupName = _string;
 }
+
+std::string  EventBottomModifier::getDetuneDirection(){
+  return detuneDirection;
+}
+void  EventBottomModifier::setDetuneDirection(std::string _string){
+  detuneDirection = _string;
+}
+
+std::string  EventBottomModifier::getDetuneSpread(){
+  return detuneSpread;
+}
+void  EventBottomModifier::setDetuneSpread(std::string _string){
+   detuneSpread = _string;
+}
+
 
 
 // ADDED BY TEJUS
@@ -1080,7 +1097,9 @@ std::string EventBottomModifier::getSaveToDiskString(){
       "                \"DETUNE\",\n"
       "                "+ probability + ",\n"
       "                "+ ((applyHowFlag ==0)?"\"SOUND\",\n":"\"PARTIAL\",\n") +
-      "                "+ ampValue +
+      "                "+ ampValue +",\n" +
+      "                "+ detuneSpread +",\n" +
+      "                "+ detuneDirection +",\n" +
       ((groupName ==""||groupName =="")?"\n              >":(
       ",\n                <\"MUT_EX\", \"" +
       groupName + "\">\n              >"));
@@ -1146,6 +1165,8 @@ std::string EventBottomModifier::getSaveLASSIEMetaDataString(){
   std::string stringbuffer = "<" + string(temp1) + "," + string(temp2)
     + ",`" + probability
     + "`,`" + ampValue
+    + "`,`" + detuneSpread
+    + "`,`" + detuneDirection
     + "`,`" + rateValue
     + "`,`" + width;
 
@@ -1176,6 +1197,8 @@ std::string EventBottomModifier::getXMLString(){
     "              <ApplyHow>" + string(temp2) + "</ApplyHow>\n"
     "              <Probability>" + probability + "</Probability>\n"
     "              <Amplitude>" + ampValue + "</Amplitude>\n"
+    "              <DetuneSpread>" + detuneSpread + "</DetuneSpread>\n"
+    "              <DetuneDirection>" + detuneDirection + "</DetuneDirection>\n"
     "              <Rate>" + rateValue +"</Rate>\n"
     "              <Width>"+ width + "</Width>\n"
     "              <GroupName>" + groupName + "</GroupName>\n"
@@ -1311,6 +1334,12 @@ IEvent::BottomEventExtraInfo::BottomEventExtraInfo(int _childTypeFlag){
 
       modifierIter++;
       currentModifier->setAmpValue(modifierIter->getString());
+
+      modifierIter++;
+      currentModifier->setDetuneSpread(modifierIter->getString());
+
+      modifierIter++;
+      currentModifier->setDetuneDirection(modifierIter->getString());
 
       modifierIter++;
       currentModifier->setRateValue(modifierIter->getString());
@@ -1971,6 +2000,8 @@ EventBottomModifier::EventBottomModifier(EventBottomModifier* _original){
   applyHowFlag = _original->applyHowFlag;
   probability = _original->probability;
   ampValue = _original->ampValue;
+  detuneDirection = _original->detuneDirection;
+  detuneSpread = _original->detuneSpread;
   rateValue = _original->rateValue;
   width = _original->width;
   groupName = _original->groupName;
@@ -3004,6 +3035,11 @@ EventBottomModifier* IEvent::BottomEventExtraInfo::buildModifiersFromDOMElement(
   thisElement = thisElement->getNextElementSibling();
   currentModifier->setAmpValue(getFunctionString(thisElement));
 
+  thisElement = thisElement->getNextElementSibling();
+  currentModifier->setDetuneSpread(getFunctionString(thisElement));
+  
+  thisElement = thisElement->getNextElementSibling();
+  currentModifier->setDetuneDirection(getFunctionString(thisElement));
 
   thisElement = thisElement->getNextElementSibling();
   currentModifier->setRateValue(getFunctionString(thisElement));
