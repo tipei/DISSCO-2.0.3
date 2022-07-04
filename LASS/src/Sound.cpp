@@ -41,7 +41,7 @@ Sound::Sound()
     setParam(DETUNE_SPREAD, 0.3);
     setParam(DETUNE_DIRECTION, -1);
     setParam(DETUNE_VELOCITY, -1);
-    setParam(DETUNE_FUNDAMENTAL, 1.0);
+    setParam(DETUNE_FUNDAMENTAL, 0);
     filterObj = NULL;
     reverbObj = NULL;
     spatializer_ = new Spatializer();
@@ -126,6 +126,13 @@ void Sound::setDetune(double direction, double spread){
 		cerr << "ERROR: Sound: out of range for DETUNE_DIRECTION." << endl;
 		return;
 	}
+	if (spread < 0 or spread > 1){
+		cerr << "ERROR: Sound: out of range for DETUNE_SPREAD.Should be a percent" << endl;
+		return;
+	}
+	if (spread == 0 and direction == 0){
+		return;
+	}
      setParam(DETUNE_DIRECTION,direction);
      setParam(DETUNE_SPREAD,spread);
 	 setParam(DETUNE_FUNDAMENTAL, 1);
@@ -147,13 +154,13 @@ void Sound::computeDetune(){
         i++;  
     }
 	float value;
-	if ((frequency/i)/first > 1){
-		value = 1;
+	if (frequency/i > first){
+		value = first/(frequency/i);
 	} else{
-		value = abs((frequency/i)/first);
+		value = (frequency/i)/first;
 	}
-	cout << "detune direction is " << getParam(DETUNE_DIRECTION) << endl;
-	cout << "detune spread is " << getParam(DETUNE_SPREAD) << endl;
+	cout << "\t detune direction is " << getParam(DETUNE_DIRECTION) << endl;
+	cout << "\t detune spread is " << getParam(DETUNE_SPREAD) << endl;
 	if (getParam(DETUNE_DIRECTION) > 0){
         setParam(DETUNE_VELOCITY,value);
 	} else{
@@ -210,10 +217,12 @@ MultiTrack* Sound::render(
     {
         cout << "\t Creating Envelopes..." << endl;
         Iterator<Partial> iter = iterator();
-    computeDetune();
+	if(getParam(DETUNE_FUNDAMENTAL) > 0.0){
+		cout << "\t Detune..." << endl;
+		computeDetune();
+	}
 	// create the detuning envelope for this partial
 	ExponentialInterpolator detuning_env;
-    cout << "\t Detune..." << endl;
 	if(getParam(DETUNE_FUNDAMENTAL) > 0.0)
 		if (getParam( DETUNE_VELOCITY) == 0.5 or getParam( DETUNE_VELOCITY) == -0.5){
 	        LinearInterpolator dv;
@@ -233,6 +242,7 @@ MultiTrack* Sound::render(
 	    setup_detuning_env(&detuning_env);
             iter.next().setParam(DETUNING_ENV,detuning_env);
         }
+		
     }
     
 

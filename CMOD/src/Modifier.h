@@ -72,7 +72,7 @@ class Modifier {
      *  \param env pointer to the Envelope to add
     **/
     void addValueEnv( Envelope* env );
-
+    
     void addSpread(double spread_);
     void addDirection(double dir_);
    /**
