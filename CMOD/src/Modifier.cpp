@@ -120,6 +120,9 @@ void Modifier::addValueEnv( Envelope* env ) {
 void Modifier::addSpread(double spread_){
   spread = spread_;
 }
+
+//----------------------------------------------------------------------------//
+
 void Modifier::addDirection(double dir_){
   direction = dir_;
 }
