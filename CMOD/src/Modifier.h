@@ -73,8 +73,18 @@ class Modifier {
     **/
     void addValueEnv( Envelope* env );
     
+   /**
+     *  Add detune spread to detune Modifier.
+     *  \param detune spread to add
+    **/
     void addSpread(double spread_);
+  
+   /**
+     *  Add detune direction to detune Modifier.
+     *  \param detune direction to add
+    **/
     void addDirection(double dir_);
+  
    /**
      *  Get the probability (between 0 and 1) that this modifier will occur
      *  \param checkPoint the checkpoint (in time) of the probability
