@@ -215,13 +215,6 @@ void Modifier::applyModSound(Sound* snd) {
 //----------------------------------------------------------------------------//
 
 void Modifier::applyModPartial(Sound* snd) {
-  cout <<"Anything in here" << direction << " : "<< spread << endl;
-  snd->setDetune(direction, spread);
-  cout << "what is the type: "<< type << endl;
-  if (type == "DETUNE"){
-    cout <<"Anything in here" << direction << " : "<< spread << endl;
-    snd->setDetune(direction, spread);
-  }
   if (type == "FREQUENCY" || type == "GLISSANDO"
       || type == "DETUNE" || type == "BEND") {
     snd->get(partialNum).setParam(FREQ_ENV, *(env_values.front()));
