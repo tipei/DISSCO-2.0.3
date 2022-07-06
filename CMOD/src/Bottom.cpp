@@ -999,27 +999,34 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
     arg = arg->GNES();
 
     Envelope* probEnv = NULL;
-    DOMElement *ampElement,*spreadElement, *directionElement, *rateElement, *widthElement, *partialResultStringElement;
-    string ampStr, spreadStr, directionStr, rateStr, widthStr, probStr, partialResultStr;
+    DOMElement *ampElement,*spreadElement, *directionElement, *velocityElement, *rateElement, *widthElement, 
+    *partialResultStringElement;
+    string ampStr, spreadStr, directionStr, velocityStr, rateStr, widthStr, probStr, partialResultStr;
 
     // Only evaluate the envelope if we apply by SOUND. Otherwise, may segfault on empty probability envelopes.
     if (applyHow == "SOUND") {
-	probEnv = (Envelope*)utilities->evaluateObject(XMLTC(arg), this, eventEnv);
-	probStr = XMLTC(arg);
+	      probEnv = (Envelope*)utilities->evaluateObject(XMLTC(arg), this, eventEnv);
+	      probStr = XMLTC(arg);
     }
 
     ampElement = arg->GNES();
-    spreadElement = ampElement->GNES();
-    directionElement = spreadElement->GNES();
-    rateElement = directionElement->GNES();
+    rateElement = ampElement->GNES();
     widthElement = rateElement->GNES();
-    partialResultStringElement = widthElement->GNES()->GNES();	
+    spreadElement = ampElement->GNES()->GNES()->GNES();
+    directionElement = spreadElement->GNES();
+    velocityElement = directionElement->GNES();
+    partialResultStringElement = widthElement->GNES()->GNES()->GNES()->GNES()->GNES();	
+    
     ampStr = XMLTC(ampElement);
     spreadStr = XMLTC(spreadElement);
     directionStr = XMLTC(directionElement);
+    velocityStr = XMLTC(velocityElement);
     rateStr = XMLTC(rateElement);
     widthStr = XMLTC(widthElement);
     partialResultStr = XMLTC(partialResultStringElement);
+
+
+
 
 
     // ADDED BY TEJUS
@@ -1046,6 +1053,9 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
       }
       if (directionStr != ""){
         newMod.addDirection(atof(directionStr.c_str()));
+      }
+      if (velocityStr != ""){
+        newMod.addVelocity(atof(velocityStr.c_str()));
       }
       if (rateStr!=""){
         Envelope* env =  (Envelope*)utilities->evaluateObject(rateStr, this, eventEnv );

@@ -68,6 +68,9 @@ public:
   std::string  getDetuneSpread();
   void  setDetuneSpread(std::string _string);
 
+  std::string  getDetuneVelocity();
+  void  setDetuneVelocity(std::string _string);
+
   std::string  getDetuneDirection();
   void  setDetuneDirection(std::string _string);
 
@@ -101,6 +104,7 @@ private:
   std::string ampValue;
   std::string detuneDirection;
   std::string detuneSpread;
+  std::string detuneVelocity;
   std::string rateValue;
   std::string width;
   std::string groupName;

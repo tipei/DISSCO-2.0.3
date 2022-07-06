@@ -129,6 +129,12 @@ void Modifier::addDirection(double dir_){
 
 //----------------------------------------------------------------------------//
 
+ void Modifier::addVelocity(double vel){
+  velocity = vel;
+ }
+
+//----------------------------------------------------------------------------//
+
 float Modifier::getProbability(double checkPoint) {
   if (checkPoint < 0 || checkPoint > 1) {
     cerr << "Modifier::getProbability -- Error: checkPt out of bounds;" << endl;
@@ -183,7 +189,7 @@ void Modifier::applyModifier(Sound* snd) {
 
 void Modifier::applyModSound(Sound* snd) {
   if (type == "DETUNE"){
-    snd->setDetune(direction, spread);
+    snd->setDetune(direction, spread, velocity);
   }
   if (type == "FREQUENCY" || type == "GLISSANDO"
       || type == "DETUNE" || type == "BEND") {

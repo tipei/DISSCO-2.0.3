@@ -31,6 +31,7 @@ class Modifier {
     Envelope* probEnv;
     double spread;
     double direction;
+    double velocity;
     deque<Envelope*> env_values; // values for the mod
     double checkPt;  // hold onto the checkpoint in case mod is WAVE_TYPE
     int partialNum;  // Partial num if applyHow==PARTIAL
@@ -84,6 +85,12 @@ class Modifier {
      *  \param detune direction to add
     **/
     void addDirection(double dir_);
+
+    /**
+     *  Add detune velocity to detune Modifier.
+     *  \param detune velocity to add
+    **/
+    void addVelocity(double vel);
   
    /**
      *  Get the probability (between 0 and 1) that this modifier will occur

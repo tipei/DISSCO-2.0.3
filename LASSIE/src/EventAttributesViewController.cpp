@@ -3979,8 +3979,13 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
 
   attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
   entry->set_text(modifier->getAmpValue());
+
   attributesRefBuilder->get_widget("SpreadEntry", entry);
   entry->set_text(modifier->getDetuneSpread());
+
+  attributesRefBuilder->get_widget("VelocityEntry", entry);
+  entry->set_text(modifier->getDetuneVelocity());
+
   attributesRefBuilder->get_widget("DirectionEntry", entry);
   entry->set_text(modifier->getDetuneDirection());
 
@@ -3994,28 +3999,43 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
   // TODO: Set text, set_sensitive(false) to gray out the box
   attributesRefBuilder->get_widget("partialResultStringEntry", entry);
   entry->set_text(modifier->getPartialResultString());
-
   ModifierType type = modifier->getModifierType();
+
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+      entry->set_sensitive(false);
+      attributesRefBuilder->get_widget("DirectionEntry", entry);
+      entry->set_sensitive(false);
+      attributesRefBuilder->get_widget("VelocityEntry", entry);
+      entry->set_sensitive(false);
   if (type == modifierAmptrans || type == modifierFreqtrans){
     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
     entry->set_sensitive(true);
     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
     entry->set_sensitive(true);
-
-  }
-  else if (type == modifierTremolo|| type == modifierVibrato){
+  } else if (type == modifierTremolo|| type == modifierVibrato){
     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
     entry->set_sensitive(true);
     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
     entry->set_sensitive(false);
+  } else if (type == modifierDetune){
+      attributesRefBuilder->get_widget("SpreadEntry", entry);
+      entry->set_sensitive(true);
+      attributesRefBuilder->get_widget("DirectionEntry", entry);
+      entry->set_sensitive(true);
+      attributesRefBuilder->get_widget("VelocityEntry", entry);
+      entry->set_sensitive(true);
+      attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+     entry->set_sensitive(false);
+     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+     entry->set_sensitive(false);
+    }
+    else{
+     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+     entry->set_sensitive(false);
+     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+     entry->set_sensitive(false);
   }
-  else{
-    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-    entry->set_sensitive(false);
-    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-    entry->set_sensitive(false);
 
-  }
 
 
   Gtk::Button* button;
@@ -4065,6 +4085,9 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
 
   attributesRefBuilder->get_widget(
     "DirectionEntry", entry);
+  entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
+
+  attributesRefBuilder->get_widget("VelocityEntry", entry);
   entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
 
   attributesRefBuilder->get_widget(
@@ -4125,15 +4148,22 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
       //Get the data for the selected row, using our knowledge of the tree
       //model:
 
+
       ModifierType type = row[typeColumns.m_col_type];
       modifier->setModifierType(type);
       Gtk::Entry* entry;
+      attributesRefBuilder->get_widget("SpreadEntry", entry);
+      entry->set_sensitive(false);
+      attributesRefBuilder->get_widget("DirectionEntry", entry);
+      entry->set_sensitive(false);
+      attributesRefBuilder->get_widget("VelocityEntry", entry);
+      entry->set_sensitive(false);
+
       if (type == modifierAmptrans || type == modifierFreqtrans){
         attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
         entry->set_sensitive(true);
         attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
         entry->set_sensitive(true);
-
       }
       else if (type == modifierTremolo|| type == modifierVibrato){
         attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
@@ -4141,6 +4171,17 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
         attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
         entry->set_sensitive(false);
 
+      } else if (type == modifierDetune){
+        attributesRefBuilder->get_widget("SpreadEntry", entry);
+        entry->set_sensitive(true);
+        attributesRefBuilder->get_widget("DirectionEntry", entry);
+        entry->set_sensitive(true);
+         attributesRefBuilder->get_widget("VelocityEntry", entry);
+        entry->set_sensitive(true);
+        attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+        entry->set_sensitive(false);
+        attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+        entry->set_sensitive(false);
       }
       else{
         attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
@@ -4209,11 +4250,6 @@ void BottomEventModifierAlignment::saveToEvent(){
   attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
   modifier->setAmpValue(entry->get_text());
 
-  attributesRefBuilder->get_widget("SpreadEntry", entry);
-  modifier->setDetuneSpread(entry->get_text());
-
-  attributesRefBuilder->get_widget("DirectionEntry", entry);
-  modifier->setDetuneDirection(entry->get_text());
 
   // ADDED BY TEJUS
   // Will have to change: partialNum should only be set when the box is not grayed out
@@ -4225,24 +4261,30 @@ void BottomEventModifierAlignment::saveToEvent(){
   if (type == modifierTremolo|| type == modifierVibrato){
     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
     modifier->setRateValue(entry->get_text());
-
     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
     modifier->setWidth("");
-
   }
   else if ( type == modifierAmptrans ||type ==modifierFreqtrans ){
-
     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
     modifier->setRateValue(entry->get_text());
-
     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
     modifier->setWidth(entry->get_text());
-  }
+  } else if (type == modifierDetune){
 
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+    modifier->setDetuneSpread(entry->get_text());
+    attributesRefBuilder->get_widget("DirectionEntry", entry);
+    modifier->setDetuneDirection(entry->get_text());
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+     modifier->setDetuneVelocity(entry->get_text());
+    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+    modifier->setRateValue("");
+    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+    modifier->setWidth("");
+  }
   else{
     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
     modifier->setRateValue("");
-
     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
     modifier->setWidth("");
 

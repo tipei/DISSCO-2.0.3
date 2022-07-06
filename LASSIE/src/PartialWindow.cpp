@@ -30,7 +30,7 @@
  * RETURNS: None
  */
 PartialWindow::PartialWindow(std::string _originalString, ModifierType _type) {
-
+  cout << "/t if there is anything" << endl;
     // Initialize internal vars
     partialSubAlignments = NULL;
     partialNumOfNodes = 0;
@@ -424,7 +424,13 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
 
   ModifierType type = parent->type;
   // Attach signals to the envelopes for modifying the result string
-  if (type == modifierAmptrans || type == modifierFreqtrans){
+  attributesRefBuilder->get_widget("SpreadEntry", entry);
+  entry->set_sensitive(false);
+  attributesRefBuilder->get_widget("DirectionEntry", entry);
+  entry->set_sensitive(false); 
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+  entry->set_sensitive(false); 
+ if (type == modifierAmptrans || type == modifierFreqtrans){
     attributesRefBuilder->get_widget("RateValueEntry", entry);
     entry->set_sensitive(true);
     attributesRefBuilder->get_widget("WidthEntry", entry);
@@ -439,13 +445,15 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
     entry->set_sensitive(false);
     attributesRefBuilder->get_widget("DirectionEntry", entry);
     entry->set_sensitive(false);
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+    entry->set_sensitive(false); 
   } else if (type == modifierDetune){
-    /**
     attributesRefBuilder->get_widget("SpreadEntry", entry);
     entry->set_sensitive(true);
     attributesRefBuilder->get_widget("DirectionEntry", entry);
     entry->set_sensitive(true);
-    **/
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+    entry->set_sensitive(true); 
     attributesRefBuilder->get_widget("WidthEntry", entry);
     entry->set_sensitive(false);
     attributesRefBuilder->get_widget("RateValueEntry", entry);
@@ -456,6 +464,15 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
     attributesRefBuilder->get_widget("WidthEntry", entry);
     entry->set_sensitive(false);
   }
+   attributesRefBuilder->get_widget("SpreadEntry", entry);
+  entry->set_sensitive(false);
+  attributesRefBuilder->get_widget("DirectionEntry", entry);
+  entry->set_sensitive(false); 
+
+
+  attributesRefBuilder->get_widget("WidthEntry", entry);
+    entry->set_sensitive(false);
+  
   attributesRefBuilder->get_widget(
     "ProbabilityEntry", entry);
   entry->signal_changed().connect(sigc::mem_fun(
@@ -593,14 +610,14 @@ std::string PartialWindow::PartialSubAlignment::toString() {
     std::string stringbuffer = "<Envelope>" +entry->get_text() + "</Envelope>";
     attributesRefBuilder->get_widget("AmpValueEntry", entry);
     stringbuffer = stringbuffer + "<Envelope>"+entry->get_text() + "</Envelope>";
-    attributesRefBuilder->get_widget("SpreadEntry", entry);
-    stringbuffer = stringbuffer + "<Envelope>"+entry->get_text() + "</Envelope>";
-    attributesRefBuilder->get_widget("DirectionEntry", entry);
-    stringbuffer = stringbuffer + "<Envelope>"+entry->get_text() + "</Envelope>";
     attributesRefBuilder->get_widget("WidthEntry", entry);
     stringbuffer = stringbuffer +"<Envelope>"+entry->get_text() + "</Envelope>";
     attributesRefBuilder->get_widget("RateValueEntry", entry);
     stringbuffer = stringbuffer +"<Envelope>"+entry->get_text() + "</Envelope>";
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+    stringbuffer = stringbuffer + "<Envelope>"+entry->get_text() + "</Envelope>";
+    attributesRefBuilder->get_widget("DirectionEntry", entry);
+    stringbuffer = stringbuffer + "<Envelope>"+entry->get_text() + "</Envelope>";
 
     return stringbuffer; 
 }

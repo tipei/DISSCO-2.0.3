@@ -121,7 +121,7 @@ void Sound::setPartialParam(PartialDynamicParam p, m_value_type v)
     }
 }
 //-----------------------------------------------------------------------------//
-void Sound::setDetune(double direction, double spread){
+void Sound::setDetune(double direction, double spread, double velocity){
 	if ( direction < -1 or direction > 1 ){
 		cerr << "ERROR: Sound: out of range for DETUNE_DIRECTION." << endl;
 		return;
@@ -130,42 +130,22 @@ void Sound::setDetune(double direction, double spread){
 		cerr << "ERROR: Sound: out of range for DETUNE_SPREAD.Should be a percent" << endl;
 		return;
 	}
-	if (spread == 0 and direction == 0){
+	if ( velocity < -1 or velocity > 1 ){
+		cerr << "ERROR: Sound: out of range for DETUNE_VELOCITY" << endl;
+		return;
+	}
+	if (spread == 0 and direction == 0 and velocity == 0){
 		return;
 	}
      setParam(DETUNE_DIRECTION,direction);
      setParam(DETUNE_SPREAD,spread);
+	 setParam(DETUNE_VELOCITY, velocity);
 	 setParam(DETUNE_FUNDAMENTAL, 1);
 }
-
-void Sound::computeDetune(){
-	Iterator<Partial> it = iterator();
-    int i = 0;
-	m_value_type frequency = 0;
-	m_value_type first = 0;
-    while(it.hasNext()) {
-		if (i == 1){
-			first = it.next().getParam(FREQUENCY).getMaxValue();
-			frequency += first;
-			i++;
-			continue;
-		}
-		frequency += it.next().getParam(FREQUENCY).getMaxValue();
-        i++;  
-    }
-	float value;
-	if (frequency/i > first){
-		value = first/(frequency/i);
-	} else{
-		value = (frequency/i)/first;
-	}
+//----------------------------------------------------------------------------//
+void Sound::showDetune(){
 	cout << "\t detune direction is " << getParam(DETUNE_DIRECTION) << endl;
 	cout << "\t detune spread is " << getParam(DETUNE_SPREAD) << endl;
-	if (getParam(DETUNE_DIRECTION) > 0){
-        setParam(DETUNE_VELOCITY,value);
-	} else{
-		setParam(DETUNE_VELOCITY,-value);
-	}
 	cout << "\t detune velocity is... " << getParam(DETUNE_VELOCITY) << endl;
 }
 
@@ -219,7 +199,7 @@ MultiTrack* Sound::render(
         Iterator<Partial> iter = iterator();
 	if(getParam(DETUNE_FUNDAMENTAL) > 0.0){
 		cout << "\t Detune..." << endl;
-		computeDetune();
+		showDetune();
 	}
 	// create the detuning envelope for this partial
 	ExponentialInterpolator detuning_env;

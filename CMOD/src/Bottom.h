@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Note.h"
 #include "TimeSpan.h"
 #include "Tempo.h"
-
 #include "Utilities.h"
 #include "Random.h"
 #include "Piece.h"
