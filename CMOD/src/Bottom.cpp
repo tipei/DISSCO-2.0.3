@@ -976,6 +976,9 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
 //      <Amplitude><Fun><Name>EnvLib</Name><Env>2</Env><Scale>1.0</Scale></Fun></Amplitude>
 //      <Rate></Rate>
 //      <Width></Width>
+//	<DetuneSpread></DetuneSpread>
+//	<DetuneDirection></DetuneDirection>
+//	<DetuneVelocity></DetuneVelocity>
 //      <GroupName></GroupName>
 //      <PartialResultString></PartialResultString>
 //    </Modifier>
