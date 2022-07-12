@@ -80,6 +80,7 @@ void Sieve::Build(int minVal, int maxVal,
 
 void Sieve::FillInVectors(vector<int>& intVect, vector<double>& doubleVect) {
 
+//cout << "Sieve::FillInVectors - eList.size()=" << eList.size() << " wList.size()=" << wList.size() << endl;
 
   list<int>::iterator eIter = eList.begin();
   list<double>::iterator wIter = wList.begin();
