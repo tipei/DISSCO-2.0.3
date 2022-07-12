@@ -377,7 +377,7 @@ double Utilities::evaluate(std::string _input, void* _object){
 
   try {
     result = p.Eval();
-    // cout << "utilities result: " << result << endl;
+//cout << "utilities result: " << result << endl;
   }
   catch (mu::ParserError){
     cerr<<"Oooops, we find a typo in your project."<<endl;
@@ -801,11 +801,11 @@ string Utilities::static_function_CURRENT_LAYER(void* _object){
 
 string Utilities::static_function_PREVIOUS_CHILD_DURATION(void* _object){
 if (_object !=NULL){
-    double resultNum = ((Event*)_object)->getPreviousChildDuration();
+    double resultNum = ((Event*)_object)->getPreviousChildEndTime();
     char result [50];
     sprintf(result, "%f",  resultNum);
-cout << "Utilities::static_function_PREVIOUS_CHILD_DURATION - resultNum=" 
-     << resultNum << endl;
+//  cout << "Utilities::static_function_PREVIOUS_CHILD_DURATION - resultNum=" 
+//       << resultNum << endl;
     return string(result);
   }
   else {
