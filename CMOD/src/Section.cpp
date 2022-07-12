@@ -525,7 +525,7 @@ int Section::FillCurrentTupletDur(Note* current_note,
 int Section::FillCompleteBeats(Note* current_note, int remaining_dur) {
   int remainder = remaining_dur % time_signature_.beat_edus_;
   int mainDur = remaining_dur / time_signature_.beat_edus_;
-
+  LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
   while (mainDur > 0) {
     int power_of_2 = TimeSignature::DiscreteLog2(time_signature_.unit_note_);
     while (power_of_2 >= 0) {
@@ -542,7 +542,7 @@ int Section::FillCompleteBeats(Note* current_note, int remaining_dur) {
       power_of_2--;
     }
 
-    LoudnessMark(current_note);
+    // LoudnessMark(current_note);
 
     if (mainDur > 0 || remainder > 0) {
       if (current_note->pitch_out != "r") {
@@ -558,6 +558,16 @@ int Section::FillCompleteBeats(Note* current_note, int remaining_dur) {
       current_note->type_out += " ";
     }
   }
+
+  // int last = current_note->type_out.size() - 1;
+  // while (current_note->type_out[last] == ' ') {
+  //   current_note->type_out = current_note->type_out.substr(0, last - 1);
+  //   last--;
+  // }
+  // if (current_note->type_out[last] == '~') {
+  //   current_note->type_out = current_note->type_out.substr(0, last - 1);
+  //   current_note->type_out += " ";
+  // }
 
   return remainder;
 }
