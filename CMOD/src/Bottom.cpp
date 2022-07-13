@@ -1357,11 +1357,17 @@ vector<string> Bottom::applyNoteModifiers( DOMElement* _playingMethods) {
 
   DOMElement* currentTechnique = techniqueElement->GFEC();
 
-  do {
+  // do {
+  //   string name = XMLTC(currentTechnique);
+  //   modNames.push_back(name);
+  //   currentTechnique = currentTechnique->GNES();
+  // } while ( currentTechnique != NULL);
+
+  while (currentTechnique != NULL) {
     string name = XMLTC(currentTechnique);
     modNames.push_back(name);
     currentTechnique = currentTechnique->GNES();
-  } while ( currentTechnique != NULL);
+  }
 
   return modNames;
 }

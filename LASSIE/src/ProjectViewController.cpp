@@ -213,6 +213,7 @@ ProjectViewController::ProjectViewController(MainWindow* _mainWindow){
 }
 
 void ProjectViewController::initializeModifiers() {
+  /*
   defaultNoteModifiers.insert(pair<string,bool>("-8va",true));
   defaultNoteModifiers.insert(pair<string,bool>("+8va",true));
   defaultNoteModifiers.insert(pair<string,bool>("bend",true));
@@ -229,10 +230,53 @@ void ProjectViewController::initializeModifiers() {
   defaultNoteModifiers.insert(pair<string,bool>("resonance",true));
   defaultNoteModifiers.insert(pair<string,bool>("resPedal",true));
   defaultNoteModifiers.insert(pair<string,bool>("sfz",true));
-  defaultNoteModifiers.insert(pair<string,bool>("sffz",true));
+  defaultNoteModifiers.insert(pair<string,bool>("open",true));
   defaultNoteModifiers.insert(pair<string,bool>("tenuto",true));
   defaultNoteModifiers.insert(pair<string,bool>("tremolo",true));
   defaultNoteModifiers.insert(pair<string,bool>("vibrato",true));
+  */
+  defaultNoteModifiers.insert(pair<string,bool>("-8va",true));
+	defaultNoteModifiers.insert(pair<string,bool>("+8va",true));
+	defaultNoteModifiers.insert(pair<string,bool>("accent",true));
+	defaultNoteModifiers.insert(pair<string,bool>("espressivo",true));
+	defaultNoteModifiers.insert(pair<string,bool>("marcato",true));
+	defaultNoteModifiers.insert(pair<string,bool>("portato",true));
+	defaultNoteModifiers.insert(pair<string,bool>("staccatissimo",true));
+	defaultNoteModifiers.insert(pair<string,bool>("staccato",true));
+	defaultNoteModifiers.insert(pair<string,bool>("tenuto",true));
+	defaultNoteModifiers.insert(pair<string,bool>("prall",true));
+	defaultNoteModifiers.insert(pair<string,bool>("prallup",true));
+	defaultNoteModifiers.insert(pair<string,bool>("pralldown",true));
+	defaultNoteModifiers.insert(pair<string,bool>("upprall",true));
+	defaultNoteModifiers.insert(pair<string,bool>("downprall",true));
+	defaultNoteModifiers.insert(pair<string,bool>("prallprall",true));
+	defaultNoteModifiers.insert(pair<string,bool>("lineprall",true));
+	defaultNoteModifiers.insert(pair<string,bool>("prallmordent",true));
+	defaultNoteModifiers.insert(pair<string,bool>("mordent",true));
+	defaultNoteModifiers.insert(pair<string,bool>("upmordent",true));
+	defaultNoteModifiers.insert(pair<string,bool>("downmordent",true));
+	defaultNoteModifiers.insert(pair<string,bool>("trill",true));
+	defaultNoteModifiers.insert(pair<string,bool>("turn",true));
+	defaultNoteModifiers.insert(pair<string,bool>("reverseturn",true));
+	defaultNoteModifiers.insert(pair<string,bool>("shortfermata",true));
+	defaultNoteModifiers.insert(pair<string,bool>("fermata",true));
+	defaultNoteModifiers.insert(pair<string,bool>("longfermata",true));
+	defaultNoteModifiers.insert(pair<string,bool>("verylongfermata",true));
+	defaultNoteModifiers.insert(pair<string,bool>("upbow",true));
+	defaultNoteModifiers.insert(pair<string,bool>("downbow",true));
+	defaultNoteModifiers.insert(pair<string,bool>("flageolet",true));
+	defaultNoteModifiers.insert(pair<string,bool>("open",true));
+	defaultNoteModifiers.insert(pair<string,bool>("halfopen",true));
+	defaultNoteModifiers.insert(pair<string,bool>("lheel",true));
+	defaultNoteModifiers.insert(pair<string,bool>("rheel",true));
+	defaultNoteModifiers.insert(pair<string,bool>("ltoe",true));
+	defaultNoteModifiers.insert(pair<string,bool>("rtoe",true));
+	defaultNoteModifiers.insert(pair<string,bool>("snappizzicato",true));
+	defaultNoteModifiers.insert(pair<string,bool>("stopped",true));
+	defaultNoteModifiers.insert(pair<string,bool>("segno",true));
+	defaultNoteModifiers.insert(pair<string,bool>("coda",true));
+	defaultNoteModifiers.insert(pair<string,bool>("varcoda",true));
+	defaultNoteModifiers.insert(pair<string,bool>("null",true));
 
   std::map<string, bool>::iterator iter = defaultNoteModifiers.begin();
   while (iter != defaultNoteModifiers.end()) {
@@ -2299,111 +2343,249 @@ cout << defaultNoteModifiers.size() << endl;
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["bend"]){
+   if (defaultNoteModifiers["accent"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "BendButton", checkButton);
+      "accentButton", checkButton);
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["dry"]){
+   if (defaultNoteModifiers["espressivo"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "DryButton", checkButton);
+      "espressivoButton", checkButton);
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["glissKeys"]){
+   if (defaultNoteModifiers["marcato"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "GlissKeysButton", checkButton);
+      "marcatoButton", checkButton);
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["glissStringRes"]){
+   if (defaultNoteModifiers["portato"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "GlissStringResButton", checkButton);
+      "portatoButton", checkButton);
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["graceTie"]){
+   if (defaultNoteModifiers["staccatissimo"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "GraceTieButton", checkButton);
+      "staccatissimoButton", checkButton);
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["letVibrate"]){
+   if (defaultNoteModifiers["staccato"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "LetVibrateButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["moltoVibrato"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "MoltoVibratoButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["mute"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "MuteButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["pedal"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "PedalButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["pluck"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "PluckButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["pressSilently"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "PressSilentlyButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["resonance"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "ResonanceButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["resPedal"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "ResPedalButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["sfz"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "SfzButton", checkButton);
-     checkButton->set_active(true);
-   }
-
-   if (defaultNoteModifiers["sffz"]){
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "SffzButton", checkButton);
+      "staccatoButton", checkButton);
      checkButton->set_active(true);
    }
 
    if (defaultNoteModifiers["tenuto"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "TenutoButton", checkButton);
+      "tenutoButton", checkButton);
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["tremolo"]){
+   if (defaultNoteModifiers["prall"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "TremoloButton", checkButton);
+      "prallButton", checkButton);
      checkButton->set_active(true);
    }
 
-   if (defaultNoteModifiers["vibrato"]){
+   if (defaultNoteModifiers["prallup"]){
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-      "VibratoButton", checkButton);
+      "prallupButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["pralldown"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "pralldownButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["upprall"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "upprallButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["downprall"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "downprallButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["prallprall"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "prallprallButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["lineprall"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "lineprallButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["open"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "OpenButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["prallmordent"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "prallmordentButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["mordent"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "mordentButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["upmordent"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "upmordentButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["downmordent"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "downmordentButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["upmordent"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "upmordentButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["trill"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "trillButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["turn"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "turnButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["reverseturn"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "reverseturnButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["shortfermata"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "shortfermataButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["fermata"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "fermataButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["longfermata"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "longfermataButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["verylongfermata"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "verylongfermataButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["upbow"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "upbowButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["downbow"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "downbowButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["flageolet"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "flageoletButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["halfopen"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "halfopenButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["lheel"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "lheelButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["rheel"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "rheelButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["ltoe"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "ltoeButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["rtoe"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "rtoeButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["snappizzicato"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "snappizzicatoButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["stopped"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "stoppedButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["segno"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "segnoButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["coda"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "codaButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["varcoda"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "varcodaButton", checkButton);
+     checkButton->set_active(true);
+   }
+
+   if (defaultNoteModifiers["null"]){
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+      "nullButton", checkButton);
      checkButton->set_active(true);
    }
 
@@ -2432,76 +2614,164 @@ cout << defaultNoteModifiers.size() << endl;
      defaultNoteModifiers["+8va"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "BendButton", checkButton);
-     defaultNoteModifiers["bend"] = checkButton->get_active();
+       "accentButton", checkButton);
+     defaultNoteModifiers["accent"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "DryButton", checkButton);
-     defaultNoteModifiers["dry"] = checkButton->get_active();
+       "espressivoButton", checkButton);
+     defaultNoteModifiers["espressivo"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "GlissKeysButton", checkButton);
-     defaultNoteModifiers["glissKeys"] = checkButton->get_active();
+       "marcatoButton", checkButton);
+     defaultNoteModifiers["glissKmarcatokeys"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "GlissStringResButton", checkButton);
-     defaultNoteModifiers["glissStringRes"] = checkButton->get_active();
+       "portatoButton", checkButton);
+     defaultNoteModifiers["portato"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "GraceTieButton", checkButton);
-     defaultNoteModifiers["graceTie"] = checkButton->get_active();
+       "staccatissimoButton", checkButton);
+     defaultNoteModifiers["staccatissimo"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "LetVibrateButton", checkButton);
-     defaultNoteModifiers["letVibrate"] = checkButton->get_active();
+       "staccatoButton", checkButton);
+     defaultNoteModifiers["staccato"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "MoltoVibratoButton", checkButton);
-     defaultNoteModifiers["moltoVibrato"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "MuteButton", checkButton);
-     defaultNoteModifiers["mute"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "PedalButton", checkButton);
-     defaultNoteModifiers["pedal"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "PluckButton", checkButton);
-     defaultNoteModifiers["pluck"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "PressSilentlyButton", checkButton);
-     defaultNoteModifiers["pressSilently"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "ResonanceButton", checkButton);
-     defaultNoteModifiers["resonance"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "ResPedalButton", checkButton);
-     defaultNoteModifiers["resPedal"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "SfzButton", checkButton);
-     defaultNoteModifiers["sfz"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "SffzButton", checkButton);
-     defaultNoteModifiers["sffz"] = checkButton->get_active();
-
-     noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "TenutoButton", checkButton);
+       "tenutoButton", checkButton);
      defaultNoteModifiers["tenuto"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "TremoloButton", checkButton);
-     defaultNoteModifiers["tremolo"] = checkButton->get_active();
+       "prallButton", checkButton);
+     defaultNoteModifiers["prall"] = checkButton->get_active();
 
      noteModifiersConfigurationDialogRefBuilder->get_widget(
-       "VibratoButton", checkButton);
-     defaultNoteModifiers["vibrato"] = checkButton->get_active();
+       "prallupButton", checkButton);
+     defaultNoteModifiers["prallup"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "pralldownButton", checkButton);
+     defaultNoteModifiers["pralldown"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "upprallButton", checkButton);
+     defaultNoteModifiers["upprall"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "downprallButton", checkButton);
+     defaultNoteModifiers["downprall"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "prallprallButton", checkButton);
+     defaultNoteModifiers["prallprall"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "lineprallButton", checkButton);
+     defaultNoteModifiers["lineprall"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "OpenButton", checkButton);
+     defaultNoteModifiers["open"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "prallmordentButton", checkButton);
+     defaultNoteModifiers["prallmordent"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "mordentButton", checkButton);
+     defaultNoteModifiers["mordent"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "upmordentButton", checkButton);
+     defaultNoteModifiers["upmordent"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "downmordentButton", checkButton);
+     defaultNoteModifiers["downmordent"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "trillButton", checkButton);
+     defaultNoteModifiers["trill"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "turnButton", checkButton);
+     defaultNoteModifiers["turn"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "reverseturnButton", checkButton);
+     defaultNoteModifiers["reverseturn"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "shortfermataButton", checkButton);
+     defaultNoteModifiers["shortfermata"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "fermataButton", checkButton);
+     defaultNoteModifiers["fermata"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "longfermataButton", checkButton);
+     defaultNoteModifiers["longfermata"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "verylongfermataButton", checkButton);
+     defaultNoteModifiers["verylongfermata"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "upbowButton", checkButton);
+     defaultNoteModifiers["upbow"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "downbowButton", checkButton);
+     defaultNoteModifiers["downbow"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "flageoletButton", checkButton);
+     defaultNoteModifiers["flageolet"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "halfopenButton", checkButton);
+     defaultNoteModifiers["halfopen"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "lheelButton", checkButton);
+     defaultNoteModifiers["lheel"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "rheelButton", checkButton);
+     defaultNoteModifiers["rheel"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "ltoeButton", checkButton);
+     defaultNoteModifiers["ltoe"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "rtoeButton", checkButton);
+     defaultNoteModifiers["rtoe"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "snappizzicatoButton", checkButton);
+     defaultNoteModifiers["snappizzicato"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "stoppedButton", checkButton);
+     defaultNoteModifiers["stopped"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "segnoButton", checkButton);
+     defaultNoteModifiers["segno"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "codaButton", checkButton);
+     defaultNoteModifiers["coda"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "varcodaButton", checkButton);
+     defaultNoteModifiers["varcoda"] = checkButton->get_active();
+
+     noteModifiersConfigurationDialogRefBuilder->get_widget(
+       "nullButton", checkButton);
+     defaultNoteModifiers["null"] = checkButton->get_active();
 
 
      std::vector<CustomNoteModifierHBox*>::iterator iter =

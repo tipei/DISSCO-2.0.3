@@ -30,19 +30,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Libraries.h"
 #include "Rational.h"
 
-/*A TimeSpan is a span in time. Explicitly it has a start time and a duration.
-Implicitly it also has an end time. A time-span may be expressed in terms of
+/*A TimeSpan is a span in time. It has a start time and a duration.
+It also has an end time. A time-span may be expressed in terms of
 seconds and, in the case of it being an exact interval, EDU.*/
 
 //----------------------------------------------------------------------------//
 struct TimeSpan {
   float start;
   float duration;
+  float end;
   Ratio startEDU;
   unsigned long long int startEDUAbsolute;
   Ratio durationEDU;
+  Ratio endEDU;
   
-  TimeSpan() : start(0), duration(0), startEDU(0, 0), startEDUAbsolute(0), durationEDU(0, 0) {}
+  TimeSpan() : start(0), duration(0), end(0), startEDU(0, 0), startEDUAbsolute(0), 
+  durationEDU(0, 0), endEDU(0, 0) {}
 };
 #endif /* TIMESPAN_H */
 
