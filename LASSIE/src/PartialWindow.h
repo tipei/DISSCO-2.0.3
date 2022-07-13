@@ -27,8 +27,6 @@ private:
         void clear();
         void setProbEntry(std::string _string);
         void setAmpValueEntry(std::string _string);
-        void setSpreadEntry(std::string _string);
-        void setDirectionEntry(std::string _string);
         void setWidthEntry(std::string _string);
         void setRateValueEntry(std::string _string);
         std::string toString();

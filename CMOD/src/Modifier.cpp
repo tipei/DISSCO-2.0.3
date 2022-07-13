@@ -188,9 +188,6 @@ void Modifier::applyModifier(Sound* snd) {
 //----------------------------------------------------------------------------//
 
 void Modifier::applyModSound(Sound* snd) {
-  if (type == "DETUNE"){
-    snd->setDetune(direction, spread, velocity);
-  }
   if (type == "FREQUENCY" || type == "GLISSANDO"
       || type == "DETUNE" || type == "BEND") {
     snd->setPartialParam(FREQ_ENV, *(env_values[0]));

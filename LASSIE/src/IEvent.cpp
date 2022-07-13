@@ -1176,7 +1176,7 @@ std::string EventBottomModifier::getSaveLASSIEMetaDataString(){
     + "`,`" + ampValue
     + "`,`" + detuneSpread
     + "`,`" + detuneDirection
-   // + "`,`" + detuneVelocity
+    + "`,`" + detuneVelocity
     + "`,`" + rateValue
     + "`,`" + width;
 
