@@ -253,7 +253,6 @@ public:
      *	\return The total duration of the sound including reverb
      **/
     m_time_type getTotalDuration(void);
-<<<<<<< HEAD
 
        /**
    * This function changes the parameters resolved around detune
@@ -265,9 +264,6 @@ public:
    This function shows the corresponding detune parameters when detune is called on
    **/
    void showDetune();
-=======
->>>>>>> parent of 6b5bdac... befault detune
-    
 private:
   
     /**

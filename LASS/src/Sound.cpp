@@ -38,18 +38,11 @@ Sound::Sound()
     setParam(START_TIME, 0.0);
     setParam(LOUDNESS, 44100.0);
     setParam(LOUDNESS_RATE, 44100.0);
-<<<<<<< HEAD
     setParam(DETUNE_SPREAD, 0.3);
     setParam(DETUNE_DIRECTION, -1);
     setParam(DETUNE_VELOCITY, -1);
     setParam(DETUNE_FUNDAMENTAL, 0);
-=======
 
-    setParam(DETUNE_SPREAD, 0.0);
-    setParam(DETUNE_DIRECTION, 0.0);
-    setParam(DETUNE_VELOCITY, -0.5);
-    setParam(DETUNE_FUNDAMENTAL, -1.0);
->>>>>>> parent of 6b5bdac... befault detune
     filterObj = NULL;
     reverbObj = NULL;
     spatializer_ = new Spatializer();
@@ -128,7 +121,6 @@ void Sound::setPartialParam(PartialDynamicParam p, m_value_type v)
         i++;  
     }
 }
-<<<<<<< HEAD
 //-----------------------------------------------------------------------------//
 void Sound::setDetune(double direction, double spread, double velocity){
 	if ( direction < -1 or direction > 1 ){
@@ -157,10 +149,6 @@ void Sound::showDetune(){
 	cout << "\t detune spread is " << getParam(DETUNE_SPREAD) << endl;
 	cout << "\t detune velocity is... " << getParam(DETUNE_VELOCITY) << endl;
 }
-=======
-
->>>>>>> parent of 6b5bdac... befault detune
-
 //----------------------------------------------------------------------------//
 /*
 void Sound::getPartialParamEnv(PartialDynamicParam p)
@@ -209,19 +197,13 @@ MultiTrack* Sound::render(
     {
         cout << "\t Creating Envelopes..." << endl;
         Iterator<Partial> iter = iterator();
-<<<<<<< HEAD
 	if(getParam(DETUNE_FUNDAMENTAL) > 0.0){
 		cout << "\t Detune..." << endl;
 		showDetune();
 	}
 	// create the detuning envelope for this partial
 	ExponentialInterpolator detuning_env;
-=======
-
-	// create the detuning envelope for this partial
-	ExponentialInterpolator detuning_env;
 	setup_detuning_env(&detuning_env);
->>>>>>> parent of 6b5bdac... befault detune
 	if(getParam(DETUNE_FUNDAMENTAL) > 0.0)
           iter.next().setParam(DETUNING_ENV,detuning_env);
         else //NOTE: this else was not here before (Andrew)
