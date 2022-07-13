@@ -219,7 +219,7 @@ public:
     *	\param s The Spatializer to use
     **/
     void setSpatializer(Spatializer& s);
-    
+
     /**
     *   This function performs filter in the render() method
     *	\param newFilterbObj The Filter object
@@ -253,6 +253,7 @@ public:
      *	\return The total duration of the sound including reverb
      **/
     m_time_type getTotalDuration(void);
+<<<<<<< HEAD
 
        /**
    * This function changes the parameters resolved around detune
@@ -264,21 +265,17 @@ public:
    This function shows the corresponding detune parameters when detune is called on
    **/
    void showDetune();
+=======
+>>>>>>> parent of 6b5bdac... befault detune
     
 private:
   
     /**
-    *	This function creates a detuning envelope
-	 when exponentially interpolated.
+    *	This function creates a detuning envelope.
     *	\param env The envelope
     **/
     void setup_detuning_env(ExponentialInterpolator *env);
-    /**
-    *   This function creates a detuning envelope
-         when linearly interpolated(DETUNE_VELOCITY == 0.5).
-    *   \param env The envelope
-    **/
-    void setup_detuning_env(LinearInterpolator *detuning_env); 
+    
     /**
     *	Pointer to a filter object that will apply filter to this sound
     **/

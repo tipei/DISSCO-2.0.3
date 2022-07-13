@@ -143,10 +143,6 @@ PartialWindow::PartialWindow(std::string _originalString, ModifierType _type) {
           envelopeElement = envelopeElement->getNextElementSibling();
           newSubAlignment->setAmpValueEntry(getFunctionString(envelopeElement));
           envelopeElement = envelopeElement->getNextElementSibling();
-          newSubAlignment->setSpreadEntry(getFunctionString(envelopeElement));
-          envelopeElement = envelopeElement->getNextElementSibling();
-          newSubAlignment->setDirectionEntry(getFunctionString(envelopeElement));
-          envelopeElement = envelopeElement->getNextElementSibling();
           newSubAlignment->setWidthEntry(getFunctionString(envelopeElement));
           envelopeElement = envelopeElement->getNextElementSibling();
           newSubAlignment->setRateValueEntry(getFunctionString(envelopeElement));
@@ -424,12 +420,6 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
 
   ModifierType type = parent->type;
   // Attach signals to the envelopes for modifying the result string
-  attributesRefBuilder->get_widget("SpreadEntry", entry);
-  entry->set_sensitive(false);
-  attributesRefBuilder->get_widget("DirectionEntry", entry);
-  entry->set_sensitive(false); 
-    attributesRefBuilder->get_widget("VelocityEntry", entry);
-  entry->set_sensitive(false); 
  if (type == modifierAmptrans || type == modifierFreqtrans){
     attributesRefBuilder->get_widget("RateValueEntry", entry);
     entry->set_sensitive(true);
@@ -441,33 +431,12 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
     entry->set_sensitive(true);
     attributesRefBuilder->get_widget("WidthEntry", entry);
     entry->set_sensitive(false);
-    attributesRefBuilder->get_widget("SpreadEntry", entry);
-    entry->set_sensitive(false);
-    attributesRefBuilder->get_widget("DirectionEntry", entry);
-    entry->set_sensitive(false);
-    attributesRefBuilder->get_widget("VelocityEntry", entry);
-    entry->set_sensitive(false); 
-  } else if (type == modifierDetune){
-    attributesRefBuilder->get_widget("SpreadEntry", entry);
-    entry->set_sensitive(true);
-    attributesRefBuilder->get_widget("DirectionEntry", entry);
-    entry->set_sensitive(true);
-    attributesRefBuilder->get_widget("VelocityEntry", entry);
-    entry->set_sensitive(true); 
-    attributesRefBuilder->get_widget("WidthEntry", entry);
-    entry->set_sensitive(false);
-    attributesRefBuilder->get_widget("RateValueEntry", entry);
-    entry->set_sensitive(false);
   }else{
     attributesRefBuilder->get_widget("RateValueEntry", entry);
     entry->set_sensitive(false);
     attributesRefBuilder->get_widget("WidthEntry", entry);
     entry->set_sensitive(false);
   }
-   attributesRefBuilder->get_widget("SpreadEntry", entry);
-  entry->set_sensitive(false);
-  attributesRefBuilder->get_widget("DirectionEntry", entry);
-  entry->set_sensitive(false); 
 
 
   attributesRefBuilder->get_widget("WidthEntry", entry);
@@ -487,19 +456,6 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
   if (entry->get_sensitive())
     entry->set_text("AMP");
 
-  attributesRefBuilder->get_widget(
-    "SpreadEntry", entry);
-  entry->signal_changed().connect(sigc::mem_fun(
-    *this, & PartialWindow::PartialSubAlignment::textChanged));
-  if (entry->get_sensitive())
-    entry->set_text("SPREAD");
-
-  attributesRefBuilder->get_widget(
-    "DirectionEntry", entry);
-  entry->signal_changed().connect(sigc::mem_fun(
-    *this, & PartialWindow::PartialSubAlignment::textChanged));
-  if (entry->get_sensitive())
-    entry->set_text("DIR");
 
   attributesRefBuilder->get_widget(
     "WidthEntry", entry);
@@ -530,7 +486,7 @@ void PartialWindow::PartialSubAlignment::setAmpValueEntry(std::string _string) {
   attributesRefBuilder->get_widget("AmpValueEntry", entry);
   entry->set_text(_string);
 }
-
+/*
 void PartialWindow::PartialSubAlignment::setSpreadEntry(std::string _string) {
   Gtk::Entry* entry;
   attributesRefBuilder->get_widget("SpreadEntry", entry);
@@ -542,7 +498,7 @@ void PartialWindow::PartialSubAlignment::setDirectionEntry(std::string _string) 
   attributesRefBuilder->get_widget("DirectionEntry", entry);
   entry->set_text(_string);
 }
-
+*/
 void PartialWindow::PartialSubAlignment::setWidthEntry(std::string _string) {
   Gtk::Entry* entry;
   attributesRefBuilder->get_widget("WidthEntry", entry);
@@ -614,10 +570,6 @@ std::string PartialWindow::PartialSubAlignment::toString() {
     stringbuffer = stringbuffer +"<Envelope>"+entry->get_text() + "</Envelope>";
     attributesRefBuilder->get_widget("RateValueEntry", entry);
     stringbuffer = stringbuffer +"<Envelope>"+entry->get_text() + "</Envelope>";
-    attributesRefBuilder->get_widget("SpreadEntry", entry);
-    stringbuffer = stringbuffer + "<Envelope>"+entry->get_text() + "</Envelope>";
-    attributesRefBuilder->get_widget("DirectionEntry", entry);
-    stringbuffer = stringbuffer + "<Envelope>"+entry->get_text() + "</Envelope>";
 
     return stringbuffer; 
 }

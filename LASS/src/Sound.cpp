@@ -38,10 +38,18 @@ Sound::Sound()
     setParam(START_TIME, 0.0);
     setParam(LOUDNESS, 44100.0);
     setParam(LOUDNESS_RATE, 44100.0);
+<<<<<<< HEAD
     setParam(DETUNE_SPREAD, 0.3);
     setParam(DETUNE_DIRECTION, -1);
     setParam(DETUNE_VELOCITY, -1);
     setParam(DETUNE_FUNDAMENTAL, 0);
+=======
+
+    setParam(DETUNE_SPREAD, 0.0);
+    setParam(DETUNE_DIRECTION, 0.0);
+    setParam(DETUNE_VELOCITY, -0.5);
+    setParam(DETUNE_FUNDAMENTAL, -1.0);
+>>>>>>> parent of 6b5bdac... befault detune
     filterObj = NULL;
     reverbObj = NULL;
     spatializer_ = new Spatializer();
@@ -120,6 +128,7 @@ void Sound::setPartialParam(PartialDynamicParam p, m_value_type v)
         i++;  
     }
 }
+<<<<<<< HEAD
 //-----------------------------------------------------------------------------//
 void Sound::setDetune(double direction, double spread, double velocity){
 	if ( direction < -1 or direction > 1 ){
@@ -148,6 +157,9 @@ void Sound::showDetune(){
 	cout << "\t detune spread is " << getParam(DETUNE_SPREAD) << endl;
 	cout << "\t detune velocity is... " << getParam(DETUNE_VELOCITY) << endl;
 }
+=======
+
+>>>>>>> parent of 6b5bdac... befault detune
 
 //----------------------------------------------------------------------------//
 /*
@@ -197,21 +209,21 @@ MultiTrack* Sound::render(
     {
         cout << "\t Creating Envelopes..." << endl;
         Iterator<Partial> iter = iterator();
+<<<<<<< HEAD
 	if(getParam(DETUNE_FUNDAMENTAL) > 0.0){
 		cout << "\t Detune..." << endl;
 		showDetune();
 	}
 	// create the detuning envelope for this partial
 	ExponentialInterpolator detuning_env;
+=======
+
+	// create the detuning envelope for this partial
+	ExponentialInterpolator detuning_env;
+	setup_detuning_env(&detuning_env);
+>>>>>>> parent of 6b5bdac... befault detune
 	if(getParam(DETUNE_FUNDAMENTAL) > 0.0)
-		if (getParam( DETUNE_VELOCITY) == 0.5 or getParam( DETUNE_VELOCITY) == -0.5){
-	        LinearInterpolator dv;
-			setup_detuning_env(&dv);
-			iter.next().setParam(DETUNING_ENV,dv);
-		} else{
-			setup_detuning_env(&detuning_env);
-			iter.next().setParam(DETUNING_ENV,detuning_env);
-		}
+          iter.next().setParam(DETUNING_ENV,detuning_env);
         else //NOTE: this else was not here before (Andrew)
           iter.next();
         
@@ -346,26 +358,22 @@ void Sound::use_filter(Filter *newFilterObj){
 //----------------------------------------------------------------------------//
 void Sound::setup_detuning_env(ExponentialInterpolator *detuning_env)
 {
-	// it does no detune/tune, return
-	if(getParam(DETUNE_FUNDAMENTAL) < 0.0) {
-       		return;
-	}
 	float x[3], y[3], spread, vel;
 
-		// determine the shape of the envelope
-		vel = getParam(DETUNE_VELOCITY);
-		x[0] = 0.0;
-		y[0] = 1.0;
+	// determine the shape of the envelope
+	vel = getParam(DETUNE_VELOCITY);
+	x[0] = 0.0;
+	y[0] = 1.0;
 
-		x[1] = (((vel*0.95)+1.0)/2.0);
-		y[1] = x[1]; 
-		
-		x[2] = 1.0;
-		y[2] = 0.0;
+	x[1] = (((vel*0.95)+1.0)/2.0);
+	y[1] = x[1]; 
+	
+	x[2] = 1.0;
+	y[2] = 0.0;
 
-		// scale by the height spread of the envelope
-		spread = (float)random() / (float)RAND_MAX * getParam(DETUNE_SPREAD) * 2.0;
-		spread = spread - getParam(DETUNE_SPREAD);
+	// scale by the height spread of the envelope
+	spread = (float)random() / (float)RAND_MAX * getParam(DETUNE_SPREAD) * 2.0;
+	spread = spread - getParam(DETUNE_SPREAD);
 
 	y[0] *= spread;
 	y[1] *= spread;
@@ -379,78 +387,9 @@ void Sound::setup_detuning_env(ExponentialInterpolator *detuning_env)
 
 	if(getParam(DETUNE_DIRECTION) < 0.0) // divergence (detuning)
 	{
-		if (vel == 1){
-			detuning_env->addEntry(y[2], x[2]);
-			detuning_env->addEntry(y[1], x[2]);
-			detuning_env->addEntry(y[1], x[1]);
-			detuning_env->addEntry(y[0], x[2]);
-			detuning_env->addEntry(y[0], x[0]);
-		} else if (vel == -1){
-			detuning_env->addEntry(y[2], x[2]);
-			detuning_env->addEntry(y[2], x[1]);
-			detuning_env->addEntry(y[1], x[1]);
-			detuning_env->addEntry(y[1], x[0]);
-			detuning_env->addEntry(y[0], x[0]);
-		} else{
-			detuning_env->addEntry(y[2], x[2]);
-			detuning_env->addEntry(y[1], x[1]);
-			detuning_env->addEntry(y[0], x[0]);
-		}	 
-	}else // convergence (tuning){
-		if (vel == 1){
-			detuning_env->addEntry(x[0], y[0]);
-			detuning_env->addEntry(x[1], y[0]);
-			detuning_env->addEntry(x[1], y[1]);
-			detuning_env->addEntry(x[2], y[1]);
-			detuning_env->addEntry(x[2], y[2]);
-		}else if (vel == -1){
-			detuning_env->addEntry(x[0], y[0]);
-            detuning_env->addEntry(x[0], y[1]); 
-			detuning_env->addEntry(x[1], y[1]);
-			detuning_env->addEntry(x[1], y[2]);
-            detuning_env->addEntry(x[2], y[2]);
-		} else{
-			detuning_env->addEntry(x[0], y[0]);
-		    detuning_env->addEntry(x[1], y[1]);
-		   detuning_env->addEntry(x[2], y[2]);
-		}
- }
-//----------------------------------------------------------------------------//
-
-void Sound::setup_detuning_env(LinearInterpolator *detuning_env){
-	// it does no detune/tune, return
-	if(getParam(DETUNE_FUNDAMENTAL) < 0.0) {
-                return;
-        }
-        float x[3], y[3], spread, vel;
-
-        // determine the shape of the envelope
-        vel = getParam(DETUNE_VELOCITY);
-        x[0] = 0.0;
-        y[0] = 1.0;
-
-        x[1] = (((vel*0.95)+1.0)/2.0);
-        y[1] = x[1];
-
-        x[2] = 1.0;
-        y[2] = 0.0;
- spread = (float)random() / (float)RAND_MAX * getParam(DETUNE_SPREAD) * 2.0;
-                spread = spread - getParam(DETUNE_SPREAD);
-
-        y[0] *= spread;
-        y[1] *= spread;
-        x[1] *= spread;
-        y[2] *= spread;
-
-        // then offset to normalize the whole thing at 1.0
-        y[0] += 1.0;
-        y[1] += 1.0;
-        y[2] += 1.0;
-	if(getParam(DETUNE_DIRECTION) < 0.0) // divergence (detuning)
-	{
-		detuning_env->addEntry(y[2], x[2]);
-		detuning_env->addEntry(y[1], x[1]);
-		detuning_env->addEntry(y[0], x[0]);
+		detuning_env->addEntry(x[2], y[2]);
+		detuning_env->addEntry(x[1], y[1]);
+		detuning_env->addEntry(x[0], y[0]);
 	}
 	else // convergence (tuning)
 	{
@@ -459,6 +398,7 @@ void Sound::setup_detuning_env(LinearInterpolator *detuning_env){
 		detuning_env->addEntry(x[2], y[2]);
 	}
 }
+
 //----------------------------------------------------------------------------//
 m_time_type Sound::getTotalDuration(void)
 {
