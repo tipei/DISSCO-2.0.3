@@ -4007,6 +4007,8 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
       entry->set_sensitive(false);
       attributesRefBuilder->get_widget("VelocityEntry", entry);
       entry->set_sensitive(false);
+       attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+      entry->set_sensitive(false);
   if (type == modifierAmptrans || type == modifierFreqtrans){
     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
     entry->set_sensitive(true);
@@ -4147,8 +4149,8 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
     {
       //Get the data for the selected row, using our knowledge of the tree
       //model:
-
-
+ 
+     
       ModifierType type = row[typeColumns.m_col_type];
       modifier->setModifierType(type);
       Gtk::Entry* entry;
@@ -4157,6 +4159,8 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
       attributesRefBuilder->get_widget("DirectionEntry", entry);
       entry->set_sensitive(false);
       attributesRefBuilder->get_widget("VelocityEntry", entry);
+      entry->set_sensitive(false);
+      attributesRefBuilder->get_widget("partialResultStringEntry", entry);
       entry->set_sensitive(false);
 
       if (type == modifierAmptrans || type == modifierFreqtrans){

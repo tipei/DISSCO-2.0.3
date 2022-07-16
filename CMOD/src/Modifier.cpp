@@ -189,7 +189,7 @@ void Modifier::applyModifier(Sound* snd) {
 
 void Modifier::applyModSound(Sound* snd) {
   if (type == "FREQUENCY" || type == "GLISSANDO"
-      || type == "DETUNE" || type == "BEND") {
+      || type == "BEND") {
     snd->setPartialParam(FREQ_ENV, *(env_values[0]));
   } else if (type == "TREMOLO") {
     snd->setPartialParam(TREMOLO_AMP, *(env_values[0]));
@@ -209,7 +209,9 @@ void Modifier::applyModSound(Sound* snd) {
     snd->setPartialParam(FREQTRANS_WIDTH, *(env_values[2]));
   } else if (type == "WAVE_TYPE") {
     snd->setPartialParam(WAVE_TYPE, env_values[0]->getValue(checkPt, 1));
-  } else {
+  } else if (type == "DETUNE"){
+    snd->setDetune(direction, spread, velocity);
+  }else {
     cerr << "ERROR: Modifier given an invalid type: " << type << endl;
     exit(1);
   }

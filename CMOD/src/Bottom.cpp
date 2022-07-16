@@ -1018,7 +1018,7 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
     spreadElement = ampElement->GNES()->GNES()->GNES();
     directionElement = spreadElement->GNES();
     velocityElement = directionElement->GNES();
-    partialResultStringElement = widthElement->GNES()->GNES()->GNES()->GNES()->GNES();	
+    partialResultStringElement = velocityElement->GNES()->GNES();	
     
     ampStr = XMLTC(ampElement);
     spreadStr = XMLTC(spreadElement);
@@ -1084,8 +1084,8 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
       delete probEnv;
     }
     else if (applyHow == "PARTIAL") {
- 
-
+      return;
+      //Problem with the code below when creating
       // See PartialWindow.cpp (and FunctionGenerator) -- same parsing used here
       XMLPlatformUtils::Initialize();
       XercesDOMParser* parser = new XercesDOMParser();
@@ -1093,48 +1093,37 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
                                         "function (in memory)");
 
       parser->parse(myxml_buf);
-
       DOMDocument* xmlDocument = parser->getDocument();
       DOMElement* root = xmlDocument->getDocumentElement();
-
       DOMElement* thisElement = root->GFEC();    //start of envelopes
-        thisElement = thisElement->GNES();    //envelopes
+      thisElement = thisElement->GNES();    //envelopes
 
       DOMElement* envelopeElement = thisElement->GFEC();//first envelope
-      for (int i = 0; i <numPartials; i ++){ // make envelopes for all the partials
-
-        Envelope* probEnv =
-	   (Envelope*)utilities->evaluateObject(XMLTC(envelopeElement), this, eventEnv);
+      for (int i = 0; i <numPartials; i ++){
+        // make envelopes for all the partials
+        //Envelope* probEnv =
+	   //(Envelope*)utilities->evaluateObject(XMLTC(envelopeElement), this, eventEnv);
         probStr = XMLTC(envelopeElement);
+   
       	// Make a new modifier 
       	Modifier newPartialMod(modType, probEnv, applyHow, i);
-
         envelopeElement = envelopeElement->GNES();
         ampStr = XMLTC(envelopeElement);
-        envelopeElement = envelopeElement->GNES();
-        widthStr = XMLTC(envelopeElement);
+       // return;
+        /*
         envelopeElement = envelopeElement->GNES();
         rateStr = XMLTC(envelopeElement);
-
+        envelopeElement = envelopeElement->GNES();
+        widthStr = XMLTC(envelopeElement);
+        */
         if (ampStr!="" && ampStr!="N/A"){
+          //cout <<"what is ampstr " << ampStr<< endl;
           Envelope* env =  (Envelope*)utilities->evaluateObject(ampStr, this, eventEnv );
           newPartialMod.addValueEnv(env);
           delete env;
         }
-
-
-        if (rateStr!="" && rateStr!="N/A"){
-          Envelope* env =  (Envelope*)utilities->evaluateObject(rateStr, this, eventEnv );
-          newPartialMod.addValueEnv(env);
-          delete env;
-        }
-
-
-        if (widthStr!="" && widthStr!="N/A"){
-          Envelope* env =  (Envelope*)utilities->evaluateObject(widthStr, this, eventEnv );
-          newPartialMod.addValueEnv(env);
-          delete env;
-        }
+        return;
+        
 
 	// delete probEnv;
         modNoDep.push_back(newPartialMod);
@@ -1146,6 +1135,7 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
   } // end of the main while loop
 
   // go through the non-exclusive mods
+  
   for (int i = 0; i < modNoDep.size(); i++) {
 
     if (modNoDep[i].willOccur(checkPoint)) {
