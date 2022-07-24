@@ -37,6 +37,8 @@
 
 #include "LASSIE.h"
 
+#include "../../CMOD/src/Bottom.h"
+
 #include "IEvent.h"
 
 // forward declaration
@@ -116,7 +118,6 @@ protected:
   ModelColumns applyHowColumns;
   ModelColumns2 typeColumns;
   EventAttributesViewController* attributesView;
-
   Glib::RefPtr<Gtk::Builder> attributesRefBuilder;//in order to build alignment
   Glib::RefPtr<Gtk::ListStore> applyHowTreeModel;
   Glib::RefPtr<Gtk::ListStore> typeTreeModel;

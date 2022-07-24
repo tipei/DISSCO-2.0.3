@@ -2287,6 +2287,8 @@ void EventAttributesViewController::showCurrentEventData(){
         	/////////////////////////////////////////////////// end new code
         	EventBottomModifier* EBmodifiers =
         	  currentlyShownEvent->getEventExtraInfo()->getModifiers();
+          //modifier = EBmodifiers;
+            
 
 
 	        BottomEventModifierAlignment* nextModifierAlignment;
@@ -4007,8 +4009,8 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
       entry->set_sensitive(false);
       attributesRefBuilder->get_widget("VelocityEntry", entry);
       entry->set_sensitive(false);
-       attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-      entry->set_sensitive(false);
+       //attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+      //entry->set_sensitive(false);
   if (type == modifierAmptrans || type == modifierFreqtrans){
     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
     entry->set_sensitive(true);
@@ -4160,8 +4162,8 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
       entry->set_sensitive(false);
       attributesRefBuilder->get_widget("VelocityEntry", entry);
       entry->set_sensitive(false);
-      attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-      entry->set_sensitive(false);
+      //attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+      //entry->set_sensitive(false);
 
       if (type == modifierAmptrans || type == modifierFreqtrans){
         attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
@@ -4840,6 +4842,11 @@ void BottomEventModifierAlignment::partialButtonClicked(){
       } else if (applyType == "PARTIAL") {
         // Pop out Partial VBox, save the result string into the text box
         PartialWindow * pwindow = new PartialWindow(entry->get_text(), modifier->getModifierType());
+        int partial_number = 10;
+         for (int i = 0; i < partial_number; i++){
+           pwindow->AddNodeButtonClicked(); // 
+         }
+
         int result = pwindow->run();
         if (pwindow->getResultString() !=""&& result ==0){
           entry->set_text(pwindow->getResultString());

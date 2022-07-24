@@ -46,6 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../../LASS/src/ProbabilityEnvelope.h" // consider moving this into LASS.h
 #include <string>
 #include <stdlib.h>
+
 //----------------------------------------------------------------------------//
 class Bottom : public Event {
 

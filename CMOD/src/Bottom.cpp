@@ -29,6 +29,7 @@
 #include "Output.h"
 static int test=0;
 
+
 //----------------------------------------------------------------------------//
 
 Bottom::Bottom(DOMElement* _element,
@@ -1084,8 +1085,6 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
       delete probEnv;
     }
     else if (applyHow == "PARTIAL") {
-      return;
-      //Problem with the code below when creating
       // See PartialWindow.cpp (and FunctionGenerator) -- same parsing used here
       XMLPlatformUtils::Initialize();
       XercesDOMParser* parser = new XercesDOMParser();
@@ -1101,8 +1100,7 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
       DOMElement* envelopeElement = thisElement->GFEC();//first envelope
       for (int i = 0; i <numPartials; i ++){
         // make envelopes for all the partials
-        //Envelope* probEnv =
-	   //(Envelope*)utilities->evaluateObject(XMLTC(envelopeElement), this, eventEnv);
+        Envelope* probEnv = (Envelope*)utilities->evaluateObject(XMLTC(envelopeElement), this, eventEnv);
         probStr = XMLTC(envelopeElement);
    
       	// Make a new modifier 
@@ -1110,19 +1108,26 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
         envelopeElement = envelopeElement->GNES();
         ampStr = XMLTC(envelopeElement);
        // return;
-        /*
+       envelopeElement = envelopeElement->GNES();
+        widthStr = XMLTC(envelopeElement);
         envelopeElement = envelopeElement->GNES();
         rateStr = XMLTC(envelopeElement);
-        envelopeElement = envelopeElement->GNES();
-        widthStr = XMLTC(envelopeElement);
-        */
         if (ampStr!="" && ampStr!="N/A"){
-          //cout <<"what is ampstr " << ampStr<< endl;
           Envelope* env =  (Envelope*)utilities->evaluateObject(ampStr, this, eventEnv );
           newPartialMod.addValueEnv(env);
           delete env;
         }
-        return;
+        if (widthStr!="" && widthStr!="N/A"){
+           Envelope* env =  (Envelope*)utilities->evaluateObject(widthStr, this, eventEnv );
+           newPartialMod.addValueEnv(env);
+           delete env;
+         }
+          if (rateStr!="" && rateStr!="N/A"){
+           Envelope* env =  (Envelope*)utilities->evaluateObject(rateStr, this, eventEnv );
+           newPartialMod.addValueEnv(env);
+           delete env;
+         }
+        //return;
         
 
 	// delete probEnv;

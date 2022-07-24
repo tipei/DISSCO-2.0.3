@@ -107,6 +107,7 @@ PartialWindow::PartialWindow(std::string _originalString, ModifierType _type) {
     string functionName;
     DOMElement* thisElement;
 
+
     // See if string empty/invalid
     if (root != NULL){
       DOMElement* functionNameElement = root->getFirstElementChild();
@@ -411,7 +412,6 @@ PartialWindow::PartialSubAlignment::PartialSubAlignment(
   // Set the partial number on the left column of the window
   attributesRefBuilder->get_widget("PartialNumLabel", label);
   label->set_text("Partial #" + std::to_string(partialNum));
-
   // Signal for removing PartialSubAlignment rows
   attributesRefBuilder->get_widget(
     "removeNodeButton", button);
