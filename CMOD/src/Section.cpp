@@ -496,9 +496,13 @@ int Section::FillCurrentTupletDur(Note* current_note,
     if(unit == 3) {
       string s = Note::int_to_str(time_signature_.unit_note_ * 2);
       current_note->type_out += current_note->pitch_out + s + ".";
+      LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+      ModifiersMark(current_note);
     } else {
       string s = Note::int_to_str(time_signature_.unit_note_ * prev_tuplet / unit);
       current_note->type_out += current_note->pitch_out + s;
+      LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+      ModifiersMark(current_note);
     }
     if ((dur > tuplet_dur || current_note->split == 1) && 
        (current_note->pitch_out != "r")) {
@@ -525,13 +529,17 @@ int Section::FillCurrentTupletDur(Note* current_note,
 int Section::FillCompleteBeats(Note* current_note, int remaining_dur) {
   int remainder = remaining_dur % time_signature_.beat_edus_;
   int mainDur = remaining_dur / time_signature_.beat_edus_;
-  LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+  // LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+  // ModifiersMark(current_note);
   while (mainDur > 0) {
     int power_of_2 = TimeSignature::DiscreteLog2(time_signature_.unit_note_);
     while (power_of_2 >= 0) {
       int beats = TimeSignature::Power(2, power_of_2);
       if (mainDur >= beats) {
         current_note->type_out += current_note->pitch_out + Note::int_to_str(time_signature_.unit_note_ / beats);
+        LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+        ModifiersMark(current_note);
+        
         mainDur -= beats;
         if (mainDur >= beats / 2 && beats >= 2){
           current_note->type_out += ".";
@@ -582,9 +590,13 @@ int Section::CreateTupletWithRests(Note* current_note,
     if (remaining_dur / (time_signature_.beat_edus_ / tuplet_type) == 3) {
       string s = Note::int_to_str(time_signature_.unit_note_ * 2);
       current_note->type_out += current_note->pitch_out + s + ". ";
+      LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+      ModifiersMark(current_note);
     } else {
       string s = Note::int_to_str(time_signature_.unit_note_ * tuplet_type);
       current_note->type_out += current_note->pitch_out + s + " ";
+      LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+      ModifiersMark(current_note);
     }
     tuplet_dur = time_signature_.beat_edus_ - remaining_dur;
   } else if (tuplet_type != -1) {
@@ -611,6 +623,8 @@ void Section::NoteInTuplet(Note* current_note, int tuplet_type, int duration) {
       int beats = TimeSignature::Power(2, power_of_2);
       if(beat >= beats){
         current_note->type_out += current_note->pitch_out + Note::int_to_str(unit_in_tuplet / beats);
+        LoudnessMark(current_note);  // this places all the dynamic marks at the beginning of a sound
+        ModifiersMark(current_note);
         beat -= beats;
         if(beat >= beats/2 && beats >= 2){
           current_note->type_out += ".";
