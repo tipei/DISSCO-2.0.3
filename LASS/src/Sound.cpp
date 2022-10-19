@@ -144,9 +144,11 @@ void Sound::setDetune(double direction, double spread, double velocity){
 }
 //----------------------------------------------------------------------------//
 void Sound::showDetune(){
+
 	cout << "\t detune direction is " << getParam(DETUNE_DIRECTION) << endl;
 	cout << "\t detune spread is " << getParam(DETUNE_SPREAD) << endl;
 	cout << "\t detune velocity is... " << getParam(DETUNE_VELOCITY) << endl;
+
 }
 
 //----------------------------------------------------------------------------//
@@ -198,8 +200,8 @@ MultiTrack* Sound::render(
         cout << "\t Creating Envelopes..." << endl;
         Iterator<Partial> iter = iterator();
 	if(getParam(DETUNE_FUNDAMENTAL) > 0.0){
-		cout << "\t Detune..." << endl;
-		showDetune();
+		//cout << "\t Detune..." << endl;
+		//showDetune();
 	}
 	// create the detuning envelope for this partial
 	ExponentialInterpolator detuning_env;
