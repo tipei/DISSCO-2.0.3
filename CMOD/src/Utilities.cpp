@@ -316,8 +316,10 @@ DOMElement* Utilities::getEventElement(EventType _type, string _eventName){
 //----------------------------------------------------------------------------//
 
 string Utilities::XMLTranscode(DOMElement* _thisFunctionElement){
-  // handle empty string
-  if (_thisFunctionElement->getFirstChild() == NULL){
+
+  // handle empty function element and empty string
+  if (_thisFunctionElement == NULL || 
+      _thisFunctionElement->getFirstChild() == NULL) {
     return "";
   }
 

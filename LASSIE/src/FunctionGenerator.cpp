@@ -2733,8 +2733,20 @@ FunctionGenerator::FunctionGenerator(
 
     // <Sizes>
     thisElement = thisElement->getNextElementSibling();
+
     // First <Size>
     DOMElement* currentPartialElement = thisElement->getFirstElementChild();
+
+    // Handles case of opening the window again after saving partials.
+    // Instead of inserting all partials sequentially, *replace* the first "room size" row entry
+    // with the first <size> value. THEN insert the rest of the partials sequentially.
+    if (REVPartialAlignments != NULL &&
+        currentPartialElement != NULL) {
+      // Replaces first row entry, instead of creating a new row for the first entry.
+      REVPartialAlignments->setText(getFunctionString(currentPartialElement));
+      currentPartialElement = currentPartialElement->getNextElementSibling();
+    }
+
     while(currentPartialElement){
       auto partial = REVInsertPartial();
       if (partial != NULL) {
@@ -3611,10 +3623,13 @@ void FunctionGenerator::function_list_combo_changed(){
         attributesRefBuilder->get_widget("REV_SimpleVBox", vbox);
         alignment->add (*vbox); //add vbox in
 
-	// Ensure there is one sound box upon inserting reverb for the first time
-	// Otherwise, you get stuck!
-	REVInsertPartial();
-	REVApplyByRadioButtonClicked();
+        // Ensure there is one sound box upon inserting reverb for the first time
+        // Otherwise, you get stuck!
+        if (!REVNumOfPartials) {
+          REVInsertPartial();
+        }
+
+        REVApplyByRadioButtonClicked();
         set_position(Gtk::WIN_POS_CENTER_ALWAYS);
         resize(400,300);
       }

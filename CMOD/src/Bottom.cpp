@@ -797,22 +797,30 @@ void Bottom::applyReverberation(Sound *s, int numPartials) {
     // Apply by sound or by partial
     string applyHow = XMLTC(arg);
     arg = arg->GNES()->GFEC(); // First <Size>
+    float roomSize;
     if (applyHow == "SOUND") {
 	// Same as before, but get first <Size>
-        float roomSize =
+        roomSize =
              utilities->evaluate(XMLTC(arg),(void*)this);
         Reverb* reverbObj = new Reverb(roomSize, SAMPLING_RATE);
         s->use_reverb(reverbObj);
     } else if (applyHow == "PARTIAL") {
     	// Now apply the reverb to each partial
     	for (int i = 0; i < numPartials; i++) {
-	    float roomSize =
-	    	utilities->evaluate(XMLTC(arg), (void*)this);
-            Reverb* reverbObj = new Reverb(roomSize, SAMPLING_RATE);
-            // Add the reverb obj to the partial. It appears that this is already implemented in LASS/src/Partial.cpp.
-	    s->get(i).use_reverb(reverbObj);
-	    arg = arg->GNES(); // Next <Size>	
-	}
+        string eval = XMLTC(arg);
+        if (eval == "") {
+          cout << "WARNING: Fewer partials set in reverb string than configured in spectrum."
+                << "Defaulting partial " << i << " to room size 0" << endl;
+          roomSize = 0.0;
+        } else {
+          roomSize = utilities->evaluate(eval, (void*)this);
+          arg = arg->GNES(); // Next <Size>	
+        }
+
+        Reverb* reverbObj = new Reverb(roomSize, SAMPLING_RATE);
+        // Add the reverb obj to the partial. It appears that this is already implemented in LASS/src/Partial.cpp.
+        s->get(i).use_reverb(reverbObj);
+	    }
     } else {
     	cout << "WARNING: No <Apply> specifier for reverb, cannot apply." << endl;
     }
