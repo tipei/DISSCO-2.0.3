@@ -1108,8 +1108,16 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
       DOMElement* envelopeElement = thisElement->GFEC();//first envelope
       for (int i = 0; i <numPartials; i ++){
         // make envelopes for all the partials
+        if (envelopeElement == NULL){
+          cout << "WARNING: Fewer partials set in partial result string string than configured in spectrum."
+          << " Correct partial number is   " << numPartials << endl;
+          return;
+        }
         Envelope* probEnv = (Envelope*)utilities->evaluateObject(XMLTC(envelopeElement), this, eventEnv);
+        
         probStr = XMLTC(envelopeElement);
+
+       
    
       	// Make a new modifier 
       	Modifier newPartialMod(modType, probEnv, applyHow, i);

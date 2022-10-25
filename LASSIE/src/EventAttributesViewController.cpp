@@ -4842,10 +4842,7 @@ void BottomEventModifierAlignment::partialButtonClicked(){
       } else if (applyType == "PARTIAL") {
         // Pop out Partial VBox, save the result string into the text box
         PartialWindow * pwindow = new PartialWindow(entry->get_text(), modifier->getModifierType());
-        int partial_number = 10;
-         for (int i = 0; i < partial_number; i++){
-           pwindow->AddNodeButtonClicked(); // 
-         }
+        
 
         int result = pwindow->run();
         if (pwindow->getResultString() !=""&& result ==0){
