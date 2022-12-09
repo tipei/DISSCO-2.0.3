@@ -6,7 +6,7 @@
 class PartialWindow : public Gtk::Dialog {
 
 public:
-    PartialWindow(std::string _originalString, ModifierType _type);
+    PartialWindow(std::string _originalString, ModifierType _type, int _numSpectrumPartials);
     ~PartialWindow();
     void AddNodeButtonClicked();
     void FunButtonClicked();
@@ -17,6 +17,7 @@ public:
 private:
     Glib::RefPtr<Gtk::Builder> attributesRefBuilder;
     ModifierType type;
+    int numSpectrumPartials;
     
     // We dedicate a class to each "sub alignment" -- each partial row
     class PartialSubAlignment:public Gtk::Alignment {
@@ -29,6 +30,7 @@ private:
         void setAmpValueEntry(std::string _string);
         void setWidthEntry(std::string _string);
         void setRateValueEntry(std::string _string);
+        void setPartialNum(int _partialNum);
         std::string toString();
         PartialSubAlignment* prev;
         PartialSubAlignment* next;

@@ -37,6 +37,8 @@
 
 
 
+// note: this is really not good practice and should change
+static int partialWindowMaxNumPartials = 1; // this is an int set by spectrum
 
 class ProjectViewController;
 /*! \brief The event types including the types defined in CMOD
@@ -540,6 +542,7 @@ public:
     virtual std::string getSpectrumGenBuilder(){ return "";}
     virtual void setSpectrumGenBuilder(std::string _string){}
 
+    virtual int getPartialWindowMaxNumPartials(){return partialWindowMaxNumPartials;}
     virtual SpectrumPartial* getSpectrumPartials(){return NULL;}
     virtual SpectrumPartial* addPartial(){}
     virtual bool deletePartial(SpectrumPartial* _partial){}
@@ -768,6 +771,7 @@ public:
     //void        setSpectrum(std::string _spectrum);
     std::string getSpectrumMetaData();
     std::string getSpectrumXMLString();
+    int getPartialWindowMaxNumPartials();
     SpectrumPartial* getSpectrumPartials();
     SpectrumPartial* addPartial();
     bool deletePartial(SpectrumPartial* _partial);

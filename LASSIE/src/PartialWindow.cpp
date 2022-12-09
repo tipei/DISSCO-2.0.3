@@ -29,12 +29,13 @@
  *                          string that is already present in the box. 
  * RETURNS: None
  */
-PartialWindow::PartialWindow(std::string _originalString, ModifierType _type) {
+PartialWindow::PartialWindow(std::string _originalString, ModifierType _type, int _numSpectrumPartials) {
   cout << "/t if there is anything" << endl;
     // Initialize internal vars
     partialSubAlignments = NULL;
     partialNumOfNodes = 0;
     type = _type;
+    numSpectrumPartials = _numSpectrumPartials;
 
     set_title("Customize Partials");
     set_border_width(3);
@@ -227,7 +228,11 @@ std::string PartialWindow::getFunctionString(DOMElement* _thisFunctionElement){
  */
 void PartialWindow::AddNodeButtonClicked(){
 
-	
+  if (partialNumOfNodes == numSpectrumPartials) {
+    cout << "WARNING: Cannot place more partials than set in spectrum!" << endl;
+    return;
+  }
+
   partialNumOfNodes ++;
 
   PartialSubAlignment* newSubAlignment =
@@ -307,6 +312,16 @@ void PartialWindow::partialRemoveNode(PartialSubAlignment* _remove){
     if (_remove->next != NULL){
       _remove->next->prev = _remove->prev;
     }
+  }
+
+  auto curr = partialSubAlignments;
+  int i = 1;
+
+  while (curr) {
+    // Set the partial number on the left column of the window
+    curr->setPartialNum(i);
+    curr = curr->next;
+    i++;
   }
 
   delete _remove;
@@ -494,6 +509,15 @@ void PartialWindow::PartialSubAlignment::setRateValueEntry(std::string _string) 
   Gtk::Entry* entry;
   attributesRefBuilder->get_widget("RateValueEntry", entry);
   entry->set_text(_string);
+}
+
+void PartialWindow::PartialSubAlignment::setPartialNum(int _partialNum) {
+  Gtk::Label* label;
+
+  // Update partial number and set the partial number on the left column of the window
+  this->partialNum = _partialNum;
+  attributesRefBuilder->get_widget("PartialNumLabel", label);
+  label->set_text("Partial #" + std::to_string(partialNum));
 }
 
 

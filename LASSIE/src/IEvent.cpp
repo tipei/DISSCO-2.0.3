@@ -40,6 +40,7 @@
 
 
 
+
 //#include <stdlib.h>
 
 struct ltstr
@@ -711,6 +712,7 @@ std::string IEvent::SoundExtraInfo::getSpectrumGenBuilder(){
 
 std::string IEvent::SoundExtraInfo::getNumPartials(){
   char charbuffer[20];
+  cout << "numPartials: " << numPartials << endl;
   sprintf( charbuffer, "%d", numPartials);
   return string(charbuffer);
 }
@@ -720,16 +722,21 @@ std::string IEvent::SoundExtraInfo::getNumPartials(){
   //spectrum = _spectrum;
 //}
 
+int IEvent::SoundExtraInfo::getPartialWindowMaxNumPartials() {
+  return partialWindowMaxNumPartials;
+}
 
 SpectrumPartial* IEvent::SoundExtraInfo::getSpectrumPartials(){
   return spectrumPartials;
 }
 
 SpectrumPartial* IEvent::SoundExtraInfo::addPartial(){
-
+  cout << "adding partial" << endl;
   SpectrumPartial* newPartial = new SpectrumPartial();
   SpectrumPartial* end = spectrumPartials;
   numPartials ++;
+  partialWindowMaxNumPartials++;
+  cout << "partialWindowMaxNumPartials: " << partialWindowMaxNumPartials << endl;
 
   if (spectrumPartials ==NULL){
     spectrumPartials = newPartial;
@@ -748,6 +755,7 @@ SpectrumPartial* IEvent::SoundExtraInfo::addPartial(){
 
 
 bool IEvent::SoundExtraInfo::deletePartial(SpectrumPartial* _partial){
+  cout << "deleting partial" << endl;
   if (numPartials ==1 ){
     return false;
   }
@@ -770,6 +778,7 @@ bool IEvent::SoundExtraInfo::deletePartial(SpectrumPartial* _partial){
     }
   }
   numPartials --;
+  partialWindowMaxNumPartials--;
   delete _partial;
   return true;
 
@@ -1966,7 +1975,7 @@ IEvent::SoundExtraInfo::SoundExtraInfo(SoundExtraInfo* _original){
 
     }
 
-
+    cout << "numPartials: " << numPartials << endl;
 }
 
 
