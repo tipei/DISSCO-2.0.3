@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../../LASS/src/ProbabilityEnvelope.h" // consider moving this into LASS.h
 #include <string>
 
+
+
 Utilities::Utilities(DOMElement* root,
                      string _workingPath,
                      bool _soundSynthesis,
@@ -51,6 +53,8 @@ Utilities::Utilities(DOMElement* root,
   samplingRate(_samplingRate),
   piece(_piece),
   numChannels(_numChannels){
+
+
 
   // New LASS Score
   if (soundSynthesis){
@@ -318,7 +322,7 @@ DOMElement* Utilities::getEventElement(EventType _type, string _eventName){
 string Utilities::XMLTranscode(DOMElement* _thisFunctionElement){
 
   // handle empty function element and empty string
-  if (_thisFunctionElement == NULL || 
+  if (_thisFunctionElement == NULL ||
       _thisFunctionElement->getFirstChild() == NULL) {
     return "";
   }
@@ -806,7 +810,7 @@ if (_object !=NULL){
     double resultNum = ((Event*)_object)->getPreviousChildEndTime();
     char result [50];
     sprintf(result, "%f",  resultNum);
-//  cout << "Utilities::static_function_PREVIOUS_CHILD_DURATION - resultNum=" 
+//  cout << "Utilities::static_function_PREVIOUS_CHILD_DURATION - resultNum="
 //       << resultNum << endl;
     return string(result);
   }
@@ -1135,7 +1139,7 @@ cout << "      beatEDUs=" << beatEDUs << endl;
   } else {
     si.Build(minVal, maxVal, eMethod.c_str(), wMethod.c_str(), eArgVect, wArgVect, offsetVect);
   }
-  
+
   si.Modify(envDist, modifyMethod);
 
   delete envLow;
@@ -1328,14 +1332,14 @@ string Utilities::function_RandomOrderInt(DOMElement* _functionElement, void* _o
   int lowBound = (int)evaluate(XMLTranscode(lowBoundElement), _object);
   int highBound = (int)evaluate(XMLTranscode(highBoundElement), _object);
   int id = (int) evaluate(XMLTranscode(idElement), _object);
-  
+
   // Event* currentEvent = ((Event*)_object);
   // int numChildren = currentEvent->getNumberOfChildren();
   // string eventName = currentEvent->getEventName();
 
   // // Warn the user if the # of choices is less than # of children
   // if (highBound - lowBound + 1 < numChildren) {
-  //   cout << "WARNING: number of choices in RandomOrderInt [" 
+  //   cout << "WARNING: number of choices in RandomOrderInt ["
   //        << lowBound << ", " << highBound << "] is less than"
   //        << " number of children in event " << eventName << "."
   //        << " This will cause repeated values."
