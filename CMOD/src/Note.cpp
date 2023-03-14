@@ -214,6 +214,8 @@ void Note::setModifiers(vector<string> modNames) {
   }
 }
 
+//----------------------------------------------------------------------------//
+
 const string& Note::GetText() const {
   return type_out;
 }

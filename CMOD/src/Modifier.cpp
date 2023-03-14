@@ -220,66 +220,59 @@ void Modifier::applyModSound(Sound* snd) {
 //----------------------------------------------------------------------------//
 
 void Modifier::applyModPartial(Sound* snd) {
-  if (type == "FREQUENCY" || type == "GLISSANDO"
-      || type == "DETUNE" || type == "BEND") {
+  if (type == "FREQUENCY" || type == "GLISSANDO" || type == "BEND") {
+//      || type == "DETUNE" || type == "BEND") {
     snd->get(partialNum).setParam(FREQ_ENV, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
+//		-----------------------added by Sever 2/4/23
+  } else if (type == "DETUNE") {
+    snd->get(partialNum).setParam(DETUNING_ENV, *(env_values.front()));
+    delete env_values.front();
+    env_values.pop_front();
+//	----------------------------------------------------
   } else if (type == "TREMOLO") {
     snd->get(partialNum).setParam(TREMOLO_AMP, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
     snd->get(partialNum).setParam(TREMOLO_RATE, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
   } else if (type == "VIBRATO") {
     snd->get(partialNum).setParam(VIBRATO_AMP, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
     snd->get(partialNum).setParam(VIBRATO_RATE, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
   } else if (type == "PHASE") {
     snd->get(partialNum).setParam(PHASE, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
   } else if (type == "AMPTRANS") {
     snd->get(partialNum).setParam(AMPTRANS_AMP_ENV, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
     snd->get(partialNum).setParam(AMPTRANS_RATE_ENV, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
     snd->get(partialNum).setParam(AMPTRANS_WIDTH, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
   } else if (type == "FREQTRANS") {
     snd->get(partialNum).setParam(FREQTRANS_AMP_ENV, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
     snd->get(partialNum).setParam(FREQTRANS_RATE_ENV, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
     snd->get(partialNum).setParam(FREQTRANS_WIDTH, *(env_values.front()));
     delete env_values.front();
     env_values.pop_front();
-
   } else if (type == "WAVE_TYPE") {
     snd->get(partialNum).setParam(WAVE_TYPE, env_values.front()->getValue(checkPt, 1));
     delete env_values.front();
     env_values.pop_front();
-
   } else  {
     cerr << "ERROR: Modifier given an invalid type: " << type << endl;
     exit(1);

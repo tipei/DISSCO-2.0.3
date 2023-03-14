@@ -38,10 +38,10 @@ Sound::Sound()
     setParam(START_TIME, 0.0);
     setParam(LOUDNESS, 44100.0);
     setParam(LOUDNESS_RATE, 44100.0);
-    setParam(DETUNE_SPREAD, 0.3);
-    setParam(DETUNE_DIRECTION, -1);
-    setParam(DETUNE_VELOCITY, -1);
-    setParam(DETUNE_FUNDAMENTAL, 0);
+    setParam(DETUNE_SPREAD, 0.0);		//0.3
+    setParam(DETUNE_DIRECTION, -1.0);		//0.0
+    setParam(DETUNE_VELOCITY, 0.5);		//-1.0
+    setParam(DETUNE_FUNDAMENTAL, 1);		//-1.0
     filterObj = NULL;
     reverbObj = NULL;
     spatializer_ = new Spatializer();
@@ -76,9 +76,9 @@ Sound::Sound(int numPartials, m_value_type baseFreq)
     setParam(LOUDNESS_RATE, 44100.0);
 
     setParam(DETUNE_SPREAD, 0.0);
-    setParam(DETUNE_DIRECTION, 0.0);
-    setParam(DETUNE_VELOCITY, -0.5);
-    setParam(DETUNE_FUNDAMENTAL, -1.0);
+    setParam(DETUNE_DIRECTION, -1.0);		//-1.0
+    setParam(DETUNE_VELOCITY, 0.5);
+    setParam(DETUNE_FUNDAMENTAL, 1.0);		//0.0
 
     reverbObj = NULL;
 
@@ -120,35 +120,43 @@ void Sound::setPartialParam(PartialDynamicParam p, m_value_type v)
         i++;  
     }
 }
-//-----------------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------------//
 void Sound::setDetune(double direction, double spread, double velocity){
-	if ( direction < -1 or direction > 1 ){
-		cerr << "ERROR: Sound: out of range for DETUNE_DIRECTION." << endl;
+
+  if ( !(direction != -1 || direction != 1 )){
+    cerr << "ERROR: Sound: out of range for DETUNE_DIRECTION." << endl;
 		return;
-	}
-	if (spread < 0 or spread > 1){
-		cerr << "ERROR: Sound: out of range for DETUNE_SPREAD.Should be a percent" << endl;
+  }
+
+  if (spread < 0 or spread > 1){ 		
+    cerr << "ERROR: Sound: out of range DETUNE_SPREAD.Should be a percent" << endl;
 		return;
-	}
-	if ( velocity < -1 or velocity > 1 ){
-		cerr << "ERROR: Sound: out of range for DETUNE_VELOCITY" << endl;
+  }
+
+  if ( velocity < -1 or velocity > 1 ){
+    cerr << "ERROR: Sound: out of range for DETUNE_VELOCITY" << endl;
 		return;
-	}
-	if (spread == 0 and direction == 0 and velocity == 0){
+  }
+
+  if (spread == 0 and direction == 0 and velocity == 0){
 		return;
-	}
-     setParam(DETUNE_DIRECTION,direction);
-     setParam(DETUNE_SPREAD,spread);
-	 setParam(DETUNE_VELOCITY, velocity);
-	 setParam(DETUNE_FUNDAMENTAL, 1);
+  }
+
+  setParam(DETUNE_DIRECTION,direction);
+  setParam(DETUNE_SPREAD,spread);
+  setParam(DETUNE_VELOCITY, velocity);
+//   setParam(DETUNE_FUNDAMENTAL, 1);
 }
+
 //----------------------------------------------------------------------------//
 void Sound::showDetune(){
 
-	cout << "\t detune direction is " << getParam(DETUNE_DIRECTION) << endl;
-	cout << "\t detune spread is " << getParam(DETUNE_SPREAD) << endl;
-	cout << "\t detune velocity is... " << getParam(DETUNE_VELOCITY) << endl;
-
+  cout << "\t detune direction is " << getParam(DETUNE_DIRECTION) << endl;
+  cout << "\t detune spread is " << getParam(DETUNE_SPREAD) << endl;
+  cout << "\t detune velocity is... " << getParam(DETUNE_VELOCITY) << endl;
+  cout << "\t detune fundamental is " << getParam(DETUNE_FUNDAMENTAL) << endl;
 }
 
 //----------------------------------------------------------------------------//
@@ -195,38 +203,29 @@ MultiTrack* Sound::render(
     //------------------
     // do the detuning setup 
     //------------------
-    if (size() != 0)
-    {
-        cout << "\t Creating Envelopes..." << endl;
-        Iterator<Partial> iter = iterator();
-	if(getParam(DETUNE_FUNDAMENTAL) > 0.0){
-		//cout << "\t Detune..." << endl;
-		//showDetune();
-	}
-	// create the detuning envelope for this partial
-	ExponentialInterpolator detuning_env;
-	if(getParam(DETUNE_FUNDAMENTAL) > 0.0)
-		if (getParam( DETUNE_VELOCITY) == 0.5 or getParam( DETUNE_VELOCITY) == -0.5){
-	        LinearInterpolator dv;
-			setup_detuning_env(&dv);
-			iter.next().setParam(DETUNING_ENV,dv);
-		} else{
-			setup_detuning_env(&detuning_env);
-			iter.next().setParam(DETUNING_ENV,detuning_env);
-		}
-        else //NOTE: this else was not here before (Andrew)
-          iter.next();
-        
-        while(iter.hasNext())
-        {
-	    // create the detuning envelope for this partial
-	    ExponentialInterpolator detuning_env;
-	    setup_detuning_env(&detuning_env);
+    if (size() != 0) {
+      cout << "\t Creating Envelopes..." << endl;
+      Iterator<Partial> iter = iterator();
+
+      if(getParam(DETUNE_FUNDAMENTAL) == 1.0){
+	cout << "\t using DETUNE" << endl;
+//      showDetune();
+
+        while(iter.hasNext()){
+      // create the detuning envelope for this partial
+
+          if (getParam( DETUNE_VELOCITY) == 0.5){
+	    LinearInterpolator dv;
+            setup_detuning_env(&dv);
+            iter.next().setParam(DETUNING_ENV,dv);
+  	  } else{
+            ExponentialInterpolator detuning_env;
+            setup_detuning_env(&detuning_env);
             iter.next().setParam(DETUNING_ENV,detuning_env);
+	  }
         }
-		
+      }
     }
-    
 
     //------------------
     // render each partial, and composite into a single track.
@@ -277,47 +276,44 @@ MultiTrack* Sound::render(
     }
   
   
-  
-  
-  // do the filter
-  if (filterObj != NULL){
-    cout << "\t Applying Filter..." << endl;
-    Track &filteredTrack = filterObj->do_filter_Track(*composite);
+    // do the filter
+    if (filterObj != NULL){
+      cout << "\t Applying Filter..." << endl;
+      Track &filteredTrack = filterObj->do_filter_Track(*composite);
 		delete composite;
 		composite = &filteredTrack;
-  }
+    }
     
   
-	// do the reverb
-	if(reverbObj != NULL)
-	{
-		cout << "\t Applying Reverb..." << endl;
-		Track &reverbedTrack = reverbObj->do_reverb_Track(*composite);
-		delete composite;
+    // do the reverb
+    if (reverbObj != NULL) {
+      cout << "\t Applying Reverb..." << endl;
+      Track &reverbedTrack = reverbObj->do_reverb_Track(*composite);
+      delete composite;
 
-		//------------------
-		// spatialize the sound into a MultiTrack object
-		//------------------
+	//------------------
+	// spatialize the sound into a MultiTrack object
+	//------------------
 
-		cout << "\t Spatializing..." << endl;
-		MultiTrack* mt = spatializer_->spatialize(reverbedTrack, numChannels);
+	cout << "\t Spatializing..." << endl;
+	MultiTrack* mt = spatializer_->spatialize(reverbedTrack, numChannels);
 
-		// delete the temporary track object that held the unspatialized reverbed sound
-		delete &reverbedTrack;
+	// delete the temporary track object that held the unspatialized reverbed sound
+	delete &reverbedTrack;
 
-		return mt;
-	}
-	else
-	{
-		//------------------
-		// spatialize the sound into a MultiTrack object
-		//------------------
+	return mt;
+     }
+       else
+     {
+	//------------------
+	// spatialize the sound into a MultiTrack object
+	//------------------
 
-		cout << "\t Spatializing..." << endl;
-		MultiTrack* mt = spatializer_->spatialize(*composite, numChannels);
-		delete composite;
-		return mt;
-	}
+	cout << "\t Spatializing..." << endl;
+	MultiTrack* mt = spatializer_->spatialize(*composite, numChannels);
+	delete composite;
+	return mt;
+      }
 }
 
 //----------------------------------------------------------------------------//
@@ -348,118 +344,132 @@ void Sound::use_filter(Filter *newFilterObj){
 //----------------------------------------------------------------------------//
 void Sound::setup_detuning_env(ExponentialInterpolator *detuning_env)
 {
-	// it does no detune/tune, return
-	if(getParam(DETUNE_FUNDAMENTAL) < 0.0) {
+//cout << "               EXPONENTIAL Interpolator" << endl;
+
+  // it does no detune/tune, return
+  if(getParam(DETUNE_FUNDAMENTAL) != 1.0) {
        		return;
-	}
-	float x[3], y[3], spread, vel;
+  }
 
-		// determine the shape of the envelope
-		vel = getParam(DETUNE_VELOCITY);
-		x[0] = 0.0;
-		y[0] = 1.0;
+  double x[3], y[3], spread0, spread, vel;
+  double randy = (float)random() / (float)RAND_MAX;
 
-		x[1] = (((vel*0.95)+1.0)/2.0);
-		y[1] = x[1]; 
-		
-		x[2] = 1.0;
-		y[2] = 0.0;
+  // determine the shape of the envelope
+  vel = getParam(DETUNE_VELOCITY);
+  x[0] = 0.0;
+  y[0] = 1.0;
 
-		// scale by the height spread of the envelope
-		spread = (float)random() / (float)RAND_MAX * getParam(DETUNE_SPREAD) * 2.0;
-		spread = spread - getParam(DETUNE_SPREAD);
+  x[1] = vel * 0.95 + randy * 0.05;
+  y[1] = x[1]; 
+//cout << "orig x1= " <<x[1] << endl;
+  x[2] = 1.0;
+  y[2] = 0.0;
 
-	y[0] *= spread;
-	y[1] *= spread;
-	x[1] *= spread;
-	y[2] *= spread;
+  // scale by the height spread of the envelope
+  spread0 = getParam(DETUNE_SPREAD);
+  spread = spread0 * randy * 2.0 - spread0;
+/*
+cout << "    randy=" << randy << endl; 
+cout << 	"Final spread= " << spread << endl;
+*/
+  y[0] *= spread;
+  y[1] *= spread * (randy * 0.5); 
 
-	// then offset to normalize the whole thing at 1.0
-	y[0] += 1.0;
-	y[1] += 1.0;
-	y[2] += 1.0;
+  // then offset to normalize the whole thing at 1.0
+  y[0] += 1.0;
+  y[1] += 1.0;
+  y[2] += 1.0;
+	
+  if(getParam(DETUNE_DIRECTION) == -1.0) // divergence (detuning)
+  {
+//cout << "		diverging (detuning)" << endl;
+  detuning_env->addEntry(x[0], y[2]);
+  detuning_env->addEntry(x[1], y[1]);
+  detuning_env->addEntry(x[2], y[0]);
+/*
+cout << "  x0=" << x[0] << " y2=" << y[2] << endl;
+cout << "  x1=" << x[1] << " y1=" << y[1] << endl;
+cout << "  x2=" << x[2] << " y0=" << y[0] << endl;
+//int sever; cin >> sever;
+*/
+  } else if(getParam(DETUNE_DIRECTION) == 1.0) {      // convergence (tuning)
+//cout << "		 converging (tuning)" << endl;
+  detuning_env->addEntry(x[0], y[0]);
+  detuning_env->addEntry(x[1], y[1]);
+  detuning_env->addEntry(x[2], y[2]);
+/*
+cout << "    	x0=" << x[0] << " y0=" << y[0] << endl;
+cout << "    	x1=" << x[1] << " y1=" << y[1] << endl;
+cout << "   	x2=" << x[2] << " y2=" << y[2] << endl;
+//int sever; cin >> sever;
+*/
+  }
 
-	if(getParam(DETUNE_DIRECTION) < 0.0) // divergence (detuning)
-	{
-		if (vel == 1){
-			detuning_env->addEntry(y[2], x[2]);
-			detuning_env->addEntry(y[1], x[2]);
-			detuning_env->addEntry(y[1], x[1]);
-			detuning_env->addEntry(y[0], x[2]);
-			detuning_env->addEntry(y[0], x[0]);
-		} else if (vel == -1){
-			detuning_env->addEntry(y[2], x[2]);
-			detuning_env->addEntry(y[2], x[1]);
-			detuning_env->addEntry(y[1], x[1]);
-			detuning_env->addEntry(y[1], x[0]);
-			detuning_env->addEntry(y[0], x[0]);
-		} else{
-			detuning_env->addEntry(y[2], x[2]);
-			detuning_env->addEntry(y[1], x[1]);
-			detuning_env->addEntry(y[0], x[0]);
-		}	 
-	}else // convergence (tuning){
-		if (vel == 1){
-			detuning_env->addEntry(x[0], y[0]);
-			detuning_env->addEntry(x[1], y[0]);
-			detuning_env->addEntry(x[1], y[1]);
-			detuning_env->addEntry(x[2], y[1]);
-			detuning_env->addEntry(x[2], y[2]);
-		}else if (vel == -1){
-			detuning_env->addEntry(x[0], y[0]);
-            detuning_env->addEntry(x[0], y[1]); 
-			detuning_env->addEntry(x[1], y[1]);
-			detuning_env->addEntry(x[1], y[2]);
-            detuning_env->addEntry(x[2], y[2]);
-		} else{
-			detuning_env->addEntry(x[0], y[0]);
-		    detuning_env->addEntry(x[1], y[1]);
-		   detuning_env->addEntry(x[2], y[2]);
-		}
- }
+}
+
+
 //----------------------------------------------------------------------------//
 
 void Sound::setup_detuning_env(LinearInterpolator *detuning_env){
-	// it does no detune/tune, return
-	if(getParam(DETUNE_FUNDAMENTAL) < 0.0) {
+	
+//cout << "		LINEAR Interpolator" << endl;
+
+// it does no detune/tune, return
+  if(getParam(DETUNE_FUNDAMENTAL) != 1.0) {
                 return;
-        }
-        float x[3], y[3], spread, vel;
+  }
 
-        // determine the shape of the envelope
-        vel = getParam(DETUNE_VELOCITY);
-        x[0] = 0.0;
-        y[0] = 1.0;
+  float x[3], y[3], spread0, spread, vel;
+  double randy = (float)random() / (float)RAND_MAX;
 
-        x[1] = (((vel*0.95)+1.0)/2.0);
-        y[1] = x[1];
+  // determine the shape of the envelope
+  vel = getParam(DETUNE_VELOCITY);
+  x[0] = 0.0;
+  y[0] = 1.0;
 
-        x[2] = 1.0;
-        y[2] = 0.0;
- spread = (float)random() / (float)RAND_MAX * getParam(DETUNE_SPREAD) * 2.0;
-                spread = spread - getParam(DETUNE_SPREAD);
+  x[1] = (((vel*0.95)+1.0)/2.0);
+  y[1] = x[1];
+  x[2] = 1.0;
+  y[2] = 0.0;
 
-        y[0] *= spread;
-        y[1] *= spread;
-        x[1] *= spread;
-        y[2] *= spread;
+  // scale by the height spread of the envelope
+  spread0 = getParam(DETUNE_SPREAD);
+  spread = spread0 * randy * 2.0 - spread0;
+/*
+cout << "    randy=" << randy << endl;
+cout <<         "Final spread= " << spread << endl;
+*/
+  y[0] *= spread;
+  y[1] *= spread * (randy * 0.5);
 
-        // then offset to normalize the whole thing at 1.0
-        y[0] += 1.0;
-        y[1] += 1.0;
-        y[2] += 1.0;
-	if(getParam(DETUNE_DIRECTION) < 0.0) // divergence (detuning)
-	{
-		detuning_env->addEntry(y[2], x[2]);
-		detuning_env->addEntry(y[1], x[1]);
-		detuning_env->addEntry(y[0], x[0]);
-	}
-	else // convergence (tuning)
-	{
-		detuning_env->addEntry(x[0], y[0]);
-		detuning_env->addEntry(x[1], y[1]);
-		detuning_env->addEntry(x[2], y[2]);
-	}
+  // then offset to normalize the whole thing at 1.0
+  y[0] += 1.0;
+  y[1] += 1.0;
+  y[2] += 1.0;
+
+  if(getParam(DETUNE_DIRECTION) == -1.0) // divergence (detuning)
+  {
+//cout << "			divergence (detuning)" << endl;
+  detuning_env->addEntry(x[0], y[2]);
+  detuning_env->addEntry(x[1], y[1]);
+  detuning_env->addEntry(x[2], y[0]);
+/*
+cout << "  x0=" << x[0] << " y2=" << y[2] << endl;
+cout << "  x1=" << x[1] << " y1=" << y[1] << endl;
+cout << "  x2=" << x[2] << " y0=" << y[0] << endl;
+*/
+  } else if(getParam(DETUNE_DIRECTION) == 1.0) {      // convergence (tuning)
+  
+//cout << "			convergence (tuning)" << endl;
+  detuning_env->addEntry(x[0], y[0]);
+  detuning_env->addEntry(x[1], y[1]);
+  detuning_env->addEntry(x[2], y[2]);
+/*
+cout << "  x0=" << x[0] << " y0=" << y[0] << endl;
+cout << "  x1=" << x[1] << " y1=" << y[1] << endl;
+cout << "  x2=" << x[2] << " y2=" << y[2] << endl;
+*/
+  }
 }
 //----------------------------------------------------------------------------//
 m_time_type Sound::getTotalDuration(void)

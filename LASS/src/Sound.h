@@ -69,7 +69,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *	\var SoundStaticParam LOUDNESS_RATE
 *		- Loudness does not have to be calculated EVERY sample.
 *		- This specifies how often loudness is calculated.
-*		- the default is 10Hz.
+*		- the default is 10Hz. NOTE: changed to 44,100Hz
 **/
 
 /**
@@ -96,18 +96,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /**
 *	\var SoundStaticParam DETUNE_VELOCITY
-*		- Values over [-1.0, +1.0]
+*		- Values over [0.0, 1.0]
 *		- For VELOCITY=0.5, the transition will be linear from start
-*		  to end.  For Velocity = -1.0, the transition will be nearly
-*		  instantaneous and immediate (and exponentially 
-*		  interpolated).  For velocity +1.0, the transition will be 
-*		  instantaneous, but will occur at the extreme end of the 
-*		  sound (And will be exponentially interpolated)
-*		- If y is the amount of tuning and x is time, think of -1.0 as
-*		  a vertical line on the left (at the beginning) and then a flat
-*		  horizontal line.  For +1.0, the horizontal line is at the 
-*		  beginning (on the left), and there is a sharp transition at
-*		  the right end (at the end).
+*		  to end.  For any other value, the transition will be 
+*		  exponentially interpolated.
 **/
 
 /**
@@ -260,6 +252,7 @@ public:
    *    \param speed, DETUNE_SPREAD
    **/
    void setDetune(double direction, double spread, double velocity);
+
    /** 
    This function shows the corresponding detune parameters when detune is called on
    **/
@@ -273,12 +266,14 @@ private:
     *	\param env The envelope
     **/
     void setup_detuning_env(ExponentialInterpolator *env);
+
     /**
     *   This function creates a detuning envelope
          when linearly interpolated(DETUNE_VELOCITY == 0.5).
     *   \param env The envelope
     **/
     void setup_detuning_env(LinearInterpolator *detuning_env); 
+
     /**
     *	Pointer to a filter object that will apply filter to this sound
     **/

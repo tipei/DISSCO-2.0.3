@@ -53,7 +53,8 @@ class ModParser {
     // Helper method for parseExpr
     void parseOperator(std::vector<ModParser::Token>& operands, std::stack<char>& operators,
                        int minVal, int maxVal);
-    // Parses an expression and stores the result for future access
+    
+   // Parses an expression and stores the result for future access
     void parseExpr(const std::string& exp, int minVal, int maxVal);
 
     // Accessors
