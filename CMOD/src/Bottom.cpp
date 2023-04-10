@@ -1017,8 +1017,8 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
 
     // Only evaluate the envelope if we apply by SOUND. Otherwise, may segfault on empty probability envelopes.
     if (applyHow == "SOUND") {
-	      probEnv = (Envelope*)utilities->evaluateObject(XMLTC(arg), this, eventEnv);
-	      probStr = XMLTC(arg);
+      probEnv = (Envelope*)utilities->evaluateObject(XMLTC(arg), this, eventEnv);
+      probStr = XMLTC(arg);
     }
 
     ampElement = arg->GNES();
@@ -1037,17 +1037,11 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
     widthStr = XMLTC(widthElement);
     partialResultStr = XMLTC(partialResultStringElement);
 
-
-
-
-
     // ADDED BY TEJUS
     // skip group name
     // DOMElement* partialResultStringElement = widthElement->GNES()->GNES();
 
-
     // TEJUS 2/8
-
     // and apply modifiers one by one via their partial number.
     // TODO: Validate the partial num to make sure that it does not go out of range.
 
@@ -1068,6 +1062,7 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
       }
       if (velocityStr != ""){
         newMod.addVelocity(atof(velocityStr.c_str()));
+float vel;
       }
       if (rateStr!=""){
         Envelope* env =  (Envelope*)utilities->evaluateObject(rateStr, this, eventEnv );
