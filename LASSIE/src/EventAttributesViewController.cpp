@@ -4848,23 +4848,12 @@ void BottomEventModifierAlignment::partialButtonClicked(){
     {
       auto applyType = row[applyHowColumns.m_col_name];
       modifier->setApplyHowFlag(row[applyHowColumns.m_col_id]);
-      if (applyType == "SOUND") {
-        // Partial box should be grayed out -- cannot modify
-      } else if (applyType == "PARTIAL") {
-        // Pop out Partial VBox, save the result string into the text box
-        // int numSpectrumPartials = 0;
-        // auto spectrumPartials = attributesView->getCurrentlyShownEvent()->getEventExtraInfo()->getSpectrumPartials();
-        // while (spectrumPartials) {
-        //   numSpectrumPartials++;
-        //   spectrumPartials = spectrumPartials->next;
-        // }
-        // cout << "numPartialsString: " << numPartialsString << endl;
-        // if (numPartialsString != "") {
-        //   numSpectrumPartials = std::stoi(numPartialsString); // Make sure this doesn't throw an exception...
-        // }
+      if (applyType == "PARTIAL") {
 
+        // Get the max number of partials allowed as determined by Spectrum
         int partialWindowMaxNumPartials = attributesView->getCurrentlyShownEvent()->getEventExtraInfo()->getPartialWindowMaxNumPartials();
-        cout << "partialWindowMaxNumPartials: " << partialWindowMaxNumPartials << endl;
+
+        // Launch PartialWindow
         PartialWindow * pwindow = new PartialWindow(entry->get_text(), modifier->getModifierType(),
                                                       partialWindowMaxNumPartials);
         

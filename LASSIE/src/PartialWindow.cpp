@@ -30,7 +30,6 @@
  * RETURNS: None
  */
 PartialWindow::PartialWindow(std::string _originalString, ModifierType _type, int _numSpectrumPartials) {
-  cout << "/t if there is anything" << endl;
     // Initialize internal vars
     partialSubAlignments = NULL;
     partialNumOfNodes = 0;
@@ -229,8 +228,20 @@ std::string PartialWindow::getFunctionString(DOMElement* _thisFunctionElement){
 void PartialWindow::AddNodeButtonClicked(){
 
   if (partialNumOfNodes == numSpectrumPartials) {
-    cout << "WARNING: Cannot place more partials than set in spectrum!" << endl;
-    return;
+
+     // Dialog box popup -- if the user attempts to add more partials than there are 
+     // in spectrum, stop them and return
+      Gtk::MessageDialog dialog(
+        "Cannot place more partials than set in spectrum!",
+        false,
+        Gtk::MESSAGE_INFO,
+        Gtk::BUTTONS_OK);
+
+      dialog.set_secondary_text(
+        "You must increase the number of partials in spectrum to be able to add more partials here.");
+
+      int result = dialog.run();
+      return;
   }
 
   partialNumOfNodes ++;
