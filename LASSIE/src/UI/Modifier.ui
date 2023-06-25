@@ -211,27 +211,6 @@
    	   <property name="position">12</property>
           </packing>
         </child>
-          <child>
-          <object class="GtkLabel" id="detunevelocity">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Detune Velocity</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="padding">5</property>
-            <property name="position">17</property>
-          </packing>
-        </child>
-          <child>
-          <object class="GtkEntry" id="VelocityEntry">
-             <property name="visible">True</property>
-           <property name="can_focus">True</property>
-            <property name="invisible_char">●</property>
-          </object>
-          <packing>
-   	   <property name="position">18</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkLabel" id="detunedirection">
             <property name="visible">True</property>
@@ -251,6 +230,27 @@
        </object>
           <packing>
             <property name="position">16</property>
+          </packing>
+        </child>
+          <child>
+          <object class="GtkLabel" id="detunevelocity">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Detune Velocity</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="padding">5</property>
+            <property name="position">17</property>
+          </packing>
+        </child>
+          <child>
+          <object class="GtkEntry" id="VelocityEntry">
+             <property name="visible">True</property>
+           <property name="can_focus">True</property>
+            <property name="invisible_char">●</property>
+          </object>
+          <packing>
+   	   <property name="position">18</property>
           </packing>
         </child>
       </object>

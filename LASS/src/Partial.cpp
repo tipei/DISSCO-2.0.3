@@ -45,7 +45,7 @@ Partial::Partial()
     setParam(LOUDNESS_SCALAR, 1.0);
     //setParam(GLISSANDO_ENV, 1.0); // (no gliss)
     setParam(FREQ_ENV, 1.0);  // nothing applied to change frequency
-    //setParam(DETUNING_ENV, 1.0); // (no detuning)
+      setParam(DETUNING_ENV, 1.0); // (no detuning)            yes detuning ??
     setParam(AMPTRANS_AMP_ENV, 0 ); //no transients
     setParam(AMPTRANS_RATE_ENV, 0 );
     setParam(FREQTRANS_AMP_ENV, 0 );
@@ -55,6 +55,7 @@ Partial::Partial()
 
     reverbObj = NULL;
 }
+
 
 //----------------------------------------------------------------------------//
 Track* Partial::render(m_sample_count_type sampleCount,
@@ -88,7 +89,7 @@ Track* Partial::render(m_sample_count_type sampleCount,
     //getParam(FREQUENCY_DEVIATION).setDuration(duration);
     //getParam(GLISSANDO_ENV).setDuration(duration);
     getParam(FREQ_ENV).setDuration(duration);
-    //getParam(DETUNING_ENV).setDuration(duration);
+      getParam(DETUNING_ENV).setDuration(duration);
     getParam(AMPTRANS_WIDTH).setDuration(duration);
     getParam(FREQTRANS_WIDTH).setDuration(duration);
 
@@ -104,7 +105,7 @@ Track* Partial::render(m_sample_count_type sampleCount,
     //getParam(FREQUENCY_DEVIATION).setSamplingRate(samplingRate);
     //getParam(GLISSANDO_ENV).setSamplingRate(samplingRate);
     getParam(FREQ_ENV).setSamplingRate(samplingRate);
-    //getParam(DETUNING_ENV).setSamplingRate(samplingRate);
+      getParam(DETUNING_ENV).setSamplingRate(samplingRate);
     getParam(AMPTRANS_WIDTH).setSamplingRate(samplingRate);
     getParam(FREQTRANS_WIDTH).setSamplingRate(samplingRate);
 
@@ -126,20 +127,20 @@ Track* Partial::render(m_sample_count_type sampleCount,
     //
     // make a copy of the glissando dynamic variable
 
-
+//cout << "Partial:: render - frequency before detune:" << getParam(FREQ_ENV).getMaxValue() << endl;
     DynamicVariable* frequency_env = getParam(FREQUENCY).clone();
     frequency_env->setDuration(duration);
 
     //DynamicVariable* gliss_env = getParam(GLISSANDO_ENV).clone();
     DynamicVariable* freq_env = getParam(FREQ_ENV).clone();
-    //DynamicVariable* detuning_env = getParam(DETUNING_ENV).clone();
+      DynamicVariable* detuning_env = getParam(DETUNING_ENV).clone();
     DynamicVariable* amptrans_amp_env = getParam(AMPTRANS_AMP_ENV).clone();
     DynamicVariable* amptrans_rate_env = getParam(AMPTRANS_RATE_ENV).clone();
     DynamicVariable* freqtrans_amp_env = getParam(FREQTRANS_AMP_ENV).clone();
     DynamicVariable* freqtrans_rate_env = getParam(FREQTRANS_RATE_ENV).clone();
     //gliss_env->setDuration(duration);
     freq_env->setDuration(duration);
-    //detuning_env->setDuration(duration);
+      detuning_env->setDuration(duration);
     amptrans_amp_env->setDuration(duration);
     amptrans_rate_env->setDuration(duration);
     freqtrans_amp_env->setDuration(duration);
@@ -164,7 +165,7 @@ Track* Partial::render(m_sample_count_type sampleCount,
     //ValIter freq_deviation_it = freq_dev->valueIterator();
     //ValIter gliss_it = gliss_env->valueIterator();
     ValIter freq_it = freq_env->valueIterator();
-    //ValIter detuning_it = detuning_env->valueIterator();
+      ValIter detuning_it = detuning_env->valueIterator();
     ValIter amptrans_amp_it = amptrans_amp_env->valueIterator();
     ValIter amptrans_rate_it = amptrans_rate_env->valueIterator();
     ValIter freqtrans_amp_it = freqtrans_amp_env->valueIterator();
@@ -209,6 +210,7 @@ Track* Partial::render(m_sample_count_type sampleCount,
     // loop over every sample:
     for (m_sample_count_type s=0; s < numSamplesToRender; s++)
     {
+
 
       // AMPLITUDE:
 
@@ -265,18 +267,6 @@ Track* Partial::render(m_sample_count_type sampleCount,
 	amplitude = amplitude + amptransient*amplitude;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	// FREQUENCY:
 
 	//advance frequency transient related iterators
@@ -323,7 +313,8 @@ Track* Partial::render(m_sample_count_type sampleCount,
         vibrato_phase = pmod( vibrato_phase + (vibrato_rate_it.next() / samplingRate) );
 
         // augment the frequency value by the freq-deviation and vibrato and detuning and freq_env and transients
-        frequency  = frequency_it.next() * freq_it.next(); // * detuning_it.next()
+        frequency  = frequency_it.next() * freq_it.next() * detuning_it.next();
+//      frequency  = frequency_it.next() * freq_it.next(); // * detuning_it.next()
         //frequency += freq_deviation_it.next();
         frequency *= 1.0 + vibrato;
 
@@ -374,7 +365,8 @@ Track* Partial::render(m_sample_count_type sampleCount,
         delete &tmp;
 
     }
-
+//cout << "Partial::render - frequency after detune:" << getParam(FREQ_ENV).getMaxValue() << endl;
+//  cout<< "--------------------------------------------"<< endl;
 
     // this section is added by Ming-ching on Dec.10 2012 to prevent memory leak
     delete frequency_env;
@@ -474,8 +466,7 @@ void Partial::xml_print( ofstream& xmlOutput, list<Reverb*>& revObjs, list<Dynam
 	/*xmlOutput << "\t\t\t<glissando_env>" << endl;
 	getParam(GLISSANDO_ENV).xml_print( xmlOutput, dynObjs );
 	xmlOutput << "\t\t\t</glissando_env>" << endl;
-	*/
-
+        */
 
 	xmlOutput << "\t\t\t<freq_env>" << endl;
 	getParam(FREQ_ENV).xml_print(xmlOutput, dynObjs);
@@ -549,8 +540,8 @@ void Partial::xml_read(XmlReader::xmltag* partialtag, DISSCO_HASHMAP<long, Rever
 		//auxLoadParam(GLISSANDO_ENV,dvtag,dvHash);
 		else if(strcmp(dvtag->name,"freq_env") == 0)
 		  auxLoadParam(FREQ_ENV,dvtag,dvHash);
-		//else if(strcmp(dvtag->name,"detuning_env") == 0)
-		//auxLoadParam(DETUNING_ENV,dvtag,dvHash);
+		  else if(strcmp(dvtag->name,"detuning_env") == 0)
+		  auxLoadParam(DETUNING_ENV,dvtag,dvHash);
 
 		child=child->next;
 	}

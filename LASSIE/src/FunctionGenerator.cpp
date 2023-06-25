@@ -7393,7 +7393,6 @@ void FunctionGenerator::REVRemovePartial(REVPartialAlignment* _remove){
   // Update partial number counts for all nodes
   auto curr = REVPartialAlignments;
   int i = 1;
-  Gtk::Label* label;
 
   while (curr) {
     // Set the partial number on the left column of the window

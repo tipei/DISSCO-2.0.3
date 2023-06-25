@@ -40,6 +40,7 @@
 
 
 
+
 //#include <stdlib.h>
 
 struct ltstr
@@ -720,16 +721,19 @@ std::string IEvent::SoundExtraInfo::getNumPartials(){
   //spectrum = _spectrum;
 //}
 
+int IEvent::SoundExtraInfo::getPartialWindowMaxNumPartials() {
+  return partialWindowMaxNumPartials;
+}
 
 SpectrumPartial* IEvent::SoundExtraInfo::getSpectrumPartials(){
   return spectrumPartials;
 }
 
 SpectrumPartial* IEvent::SoundExtraInfo::addPartial(){
-
   SpectrumPartial* newPartial = new SpectrumPartial();
   SpectrumPartial* end = spectrumPartials;
   numPartials ++;
+  partialWindowMaxNumPartials++;
 
   if (spectrumPartials ==NULL){
     spectrumPartials = newPartial;
@@ -770,6 +774,7 @@ bool IEvent::SoundExtraInfo::deletePartial(SpectrumPartial* _partial){
     }
   }
   numPartials --;
+  partialWindowMaxNumPartials--;
   delete _partial;
   return true;
 
@@ -1965,7 +1970,6 @@ IEvent::SoundExtraInfo::SoundExtraInfo(SoundExtraInfo* _original){
 
 
     }
-
 
 }
 

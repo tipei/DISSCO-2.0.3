@@ -4130,6 +4130,7 @@ BottomEventModifierAlignment::~BottomEventModifierAlignment(){
 void BottomEventModifierAlignment::on_applyHow_combo_changed(){
   attributesView->modified();
   Gtk::ComboBox* combobox;
+  Gtk::Entry* entry;
   attributesRefBuilder->get_widget("applyHowCombobox", combobox);
   Gtk::TreeModel::iterator iter = combobox->get_active();
   if(iter)
@@ -4139,6 +4140,17 @@ void BottomEventModifierAlignment::on_applyHow_combo_changed(){
     {
       auto applyType = row[applyHowColumns.m_col_name];
       modifier->setApplyHowFlag(row[applyHowColumns.m_col_id]);
+
+      // Any modifiers whose text box state needs to change when applyHow is changed, 
+      // should be changed here 
+
+      // Decide whether to gray out partialResultString
+      attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+      if (applyType == "SOUND") {
+        entry->set_sensitive(false);
+      } else if (applyType == "PARTIAL") {
+        entry->set_sensitive(true);
+      }
     }
   }
 
@@ -4170,8 +4182,8 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
       entry->set_sensitive(false);
       attributesRefBuilder->get_widget("VelocityEntry", entry);
       entry->set_sensitive(false);
-      // attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-      // entry->set_sensitive(false);
+      
+      auto applyHow = modifier->getApplyHowFlag();
 
       if (type == modifierAmptrans || type == modifierFreqtrans){
         attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
@@ -4852,12 +4864,14 @@ void BottomEventModifierAlignment::partialButtonClicked(){
     {
       auto applyType = row[applyHowColumns.m_col_name];
       modifier->setApplyHowFlag(row[applyHowColumns.m_col_id]);
-      // TODO: Gray out box when SOUND is selected, pop out partial vbox
-      if (applyType == "SOUND") {
-        // Partial box should be grayed out -- cannot modify
-      } else if (applyType == "PARTIAL") {
-        // Pop out Partial VBox, save the result string into the text box
-        PartialWindow * pwindow = new PartialWindow(entry->get_text(), modifier->getModifierType());
+      if (applyType == "PARTIAL") {
+
+        // Get the max number of partials allowed as determined by Spectrum
+        int partialWindowMaxNumPartials = attributesView->getCurrentlyShownEvent()->getEventExtraInfo()->getPartialWindowMaxNumPartials();
+
+        // Launch PartialWindow
+        PartialWindow * pwindow = new PartialWindow(entry->get_text(), modifier->getModifierType(),
+                                                      partialWindowMaxNumPartials);
         
 
         int result = pwindow->run();
