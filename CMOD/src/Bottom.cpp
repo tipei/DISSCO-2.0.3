@@ -998,11 +998,11 @@ void Bottom::applyModifiers(Sound *s, int numPartials) {
       case 0: modType = "TREMOLO"; break;
       case 1: modType = "VIBRATO"; break;
       case 2: modType = "GLISSANDO"; break;
-      case 3: modType = "BEND"; break;
-      case 4: modType = "DETUNE"; break;
-      case 5: modType = "AMPTRANS"; break;
-      case 6: modType = "FREQTRANS"; break;
-      case 7: modType = "WAVE_TYPE"; break;
+      // case 3: modType = "BEND"; break;
+      case 3: modType = "DETUNE"; break;
+      case 4: modType = "AMPTRANS"; break;
+      case 5: modType = "FREQTRANS"; break;
+      case 6: modType = "WAVE_TYPE"; break;
     }
     //cout<<"Mod Type: "<<modType<<endl;
     arg = arg->GNES();
@@ -1237,8 +1237,8 @@ vector<string> Bottom::applyNoteModifiersOld() {
       case 0: modType = "TREMOLO"; break;
       case 1: modType = "VIBRATO"; break;
       case 2: modType = "GLISSANDO"; break;
-      case 3: modType = "BEND"; break;
-      case 4: modType = "DETUNE"; break;
+      // case 3: modType = "BEND"; break;
+      case 3: modType = "DETUNE"; break;
     }
     //cout<<"Mod Type: "<<modType<<endl;
 

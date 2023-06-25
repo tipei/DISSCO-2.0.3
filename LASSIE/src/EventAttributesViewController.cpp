@@ -3975,33 +3975,41 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
 
   attributesRefBuilder->get_widget("groupNameEntry", entry);
   entry->set_text(modifier->getGroupName());
+  cout<<modifier->getGroupName();
 
   attributesRefBuilder->get_widget("probablityEnvelopeEntry", entry);
   entry->set_text(modifier->getProbability());
+  cout<<modifier->getProbability();
 
   attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
   entry->set_text(modifier->getAmpValue());
+  cout<<modifier->getAmpValue();
 
   attributesRefBuilder->get_widget("SpreadEntry", entry);
   entry->set_text(modifier->getDetuneSpread());
+  cout<<modifier->getDetuneSpread();
 
   attributesRefBuilder->get_widget("VelocityEntry", entry);
   entry->set_text(modifier->getDetuneVelocity());
+  cout<<modifier->getDetuneVelocity();
 
   attributesRefBuilder->get_widget("DirectionEntry", entry);
   entry->set_text(modifier->getDetuneDirection());
+  cout<<modifier->getDetuneDirection();
 
   attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
   entry->set_text(modifier->getRateValue());
+  cout<<modifier->getRateValue();
 
   attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
   entry->set_text(modifier->getWidth());
+  cout<<modifier->getWidth();
 
   // ADDED BY TEJUS
   // TODO: Set text, set_sensitive(false) to gray out the box
-  attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-  entry->set_text(modifier->getPartialResultString());
-  ModifierType type = modifier->getModifierType();
+  // attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+  // entry->set_text(modifier->getPartialResultString());
+  // ModifierType type = modifier->getModifierType();
 
     attributesRefBuilder->get_widget("SpreadEntry", entry);
       entry->set_sensitive(false);
@@ -4065,10 +4073,10 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
     "widthEnvelopeButton", button);
   button->signal_clicked().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::widthEnvelopeButtonClicked));
 
-  // ADDED BY TEJUS : 11/27/21
-      attributesRefBuilder->get_widget(
-    "partialResultStringButton", button);
-  button->signal_clicked().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::partialButtonClicked));
+  // // ADDED BY TEJUS : 11/27/21
+  //     attributesRefBuilder->get_widget(
+  //   "partialResultStringButton", button);
+  // button->signal_clicked().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::partialButtonClicked));
 
 
   attributesRefBuilder->get_widget(
@@ -4103,10 +4111,10 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
   entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
 
   // ADDED BY TEJUS
-  attributesRefBuilder->get_widget(
-    "partialResultStringEntry", entry);
-  // Not entirely sure where this goes?
-  entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
+  // attributesRefBuilder->get_widget(
+  //   "partialResultStringEntry", entry);
+  // // Not entirely sure where this goes?
+  // entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
 
   show_all_children();
 }
@@ -4162,8 +4170,8 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
       entry->set_sensitive(false);
       attributesRefBuilder->get_widget("VelocityEntry", entry);
       entry->set_sensitive(false);
-      //attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-      //entry->set_sensitive(false);
+      // attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+      // entry->set_sensitive(false);
 
       if (type == modifierAmptrans || type == modifierFreqtrans){
         attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
@@ -4196,6 +4204,14 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
         entry->set_sensitive(false);
 
       }
+
+      // if (type == modifierTremolo|| type == modifierVibrato){
+      //   attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+      //   entry->set_sensitive(true);
+      //   attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+      //   entry->set_sensitive(false);
+
+      // }
     }
 
 
@@ -4259,8 +4275,8 @@ void BottomEventModifierAlignment::saveToEvent(){
 
   // ADDED BY TEJUS
   // Will have to change: partialNum should only be set when the box is not grayed out
-  attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-  modifier->setPartialResultString(entry->get_text());
+  // attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+  // modifier->setPartialResultString(entry->get_text());
 
   ModifierType type = modifier->getModifierType();
 

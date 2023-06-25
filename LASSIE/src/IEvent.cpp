@@ -937,7 +937,7 @@ EventBottomModifier::EventBottomModifier(){
   rateValue = "";
   width = "";
   groupName = "";
-  partialResultString = "";
+  // partialResultString = "";
   next = NULL;
 }
 
@@ -1016,12 +1016,12 @@ void  EventBottomModifier::setDetuneVelocity(std::string _string){
 
 
 // ADDED BY TEJUS
-std::string EventBottomModifier::getPartialResultString(){
-  return partialResultString;
-}
-void  EventBottomModifier::setPartialResultString(string _string){
-  partialResultString = _string;
-}
+// std::string EventBottomModifier::getPartialResultString(){
+//   return partialResultString;
+// }
+// void  EventBottomModifier::setPartialResultString(string _string){
+//   partialResultString = _string;
+// }
 
 int EventBottomModifier::getModifierTypeInt(){
   // CHANGED BY TEJUS 10/3/2021
@@ -1034,20 +1034,20 @@ int EventBottomModifier::getModifierTypeInt(){
   else if (type == modifierGlissando){
     return 2;
   }
-  else if (type ==  modifierBend){
+  // else if (type ==  modifierBend){
+  //   return 3;
+  // }
+  else if (type ==  modifierDetune){
     return 3;
   }
-  else if (type ==  modifierDetune){
+  else if (type ==  modifierAmptrans){
     return 4;
   }
-  else if (type ==  modifierAmptrans){
+  else if (type ==  modifierFreqtrans){
     return 5;
   }
-  else if (type ==  modifierFreqtrans){
-    return 6;
-  }
   else {
-    return 7;
+    return 6;
   }
 }
 
@@ -1089,17 +1089,17 @@ std::string EventBottomModifier::getSaveToDiskString(){
       ",\n                <\"MUT_EX\", \"" + groupName +
       "\">\n              >"));
   }
-  else if (type == modifierBend){
-    stringbuffer ="              <\n"
-      "                \"BEND\",\n"
-      "                "+ probability + ",\n"
-      "                "+ ((applyHowFlag ==0)?"\"SOUND\",\n":"\"PARTIAL\",\n") +
-      "                "+ ampValue +
-      ((groupName ==""||groupName =="")?"\n              >":(
-      ",\n                <\"MUT_EX\", \"" +
-      groupName + "\">\n              >"));
+  // else if (type == modifierBend){
+  //   stringbuffer ="              <\n"
+  //     "                \"BEND\",\n"
+  //     "                "+ probability + ",\n"
+  //     "                "+ ((applyHowFlag ==0)?"\"SOUND\",\n":"\"PARTIAL\",\n") +
+  //     "                "+ ampValue +
+  //     ((groupName ==""||groupName =="")?"\n              >":(
+  //     ",\n                <\"MUT_EX\", \"" +
+  //     groupName + "\">\n              >"));
 
-  }
+  // }
   else if (type == modifierDetune){
     stringbuffer ="              <\n"
       "                \"DETUNE\",\n"
@@ -1108,7 +1108,7 @@ std::string EventBottomModifier::getSaveToDiskString(){
       "                "+ ampValue +",\n" +
       "                "+ detuneSpread +",\n" +
       "                "+ detuneDirection +",\n" +
-      //"                "+ detuneVelocity +",\n" +
+      "                "+ detuneVelocity +",\n" +
       ((groupName ==""||groupName =="")?"\n              >":(
       ",\n                <\"MUT_EX\", \"" +
       groupName + "\">\n              >"));
@@ -1213,7 +1213,7 @@ std::string EventBottomModifier::getXMLString(){
     "              <DetuneDirection>" + detuneDirection + "</DetuneDirection>\n"
     "              <DetuneVelocity>" + detuneVelocity + "</DetuneVelocity>\n"
     "              <GroupName>" + groupName + "</GroupName>\n"
-    "              <PartialResultString>"+ partialResultString + "</PartialResultString>\n"
+    // "              <PartialResultString>"+ partialResultString + "</PartialResultString>\n"
     "            </Modifier>\n";
   return stringbuffer;
 
@@ -2022,7 +2022,7 @@ EventBottomModifier::EventBottomModifier(EventBottomModifier* _original){
   width = _original->width;
   groupName = _original->groupName;
   // ADDED BY TEJUS
-  partialResultString = _original->partialResultString;
+  // partialResultString = _original->partialResultString;
 }
 
 
@@ -3044,21 +3044,9 @@ EventBottomModifier* IEvent::BottomEventExtraInfo::buildModifiersFromDOMElement(
   thisElement = thisElement->getNextElementSibling();
   currentModifier->setProbability(getFunctionString(thisElement));
 
-
-
-
-
   thisElement = thisElement->getNextElementSibling();
   currentModifier->setAmpValue(getFunctionString(thisElement));
 
-  thisElement = thisElement->getNextElementSibling();
-  currentModifier->setDetuneSpread(getFunctionString(thisElement));
-  
-  thisElement = thisElement->getNextElementSibling();
-  currentModifier->setDetuneDirection(getFunctionString(thisElement));
-
-  //thisElement = thisElement->getNextElementSibling();
-  //currentModifier->setDetuneVelocity(getFunctionString(thisElement));
 
   thisElement = thisElement->getNextElementSibling();
   currentModifier->setRateValue(getFunctionString(thisElement));
@@ -3068,10 +3056,19 @@ EventBottomModifier* IEvent::BottomEventExtraInfo::buildModifiersFromDOMElement(
   currentModifier->setWidth(getFunctionString(thisElement));
 
   thisElement = thisElement->getNextElementSibling();
-  currentModifier->setGroupName(getFunctionString(thisElement));
+  currentModifier->setDetuneSpread(getFunctionString(thisElement));
+  
+  thisElement = thisElement->getNextElementSibling();
+  currentModifier->setDetuneDirection(getFunctionString(thisElement));
 
   thisElement = thisElement->getNextElementSibling();
-  currentModifier->setPartialResultString(getFunctionString(thisElement));
+  currentModifier->setDetuneVelocity(getFunctionString(thisElement));
+  
+  thisElement = thisElement->getNextElementSibling();
+  currentModifier->setGroupName(getFunctionString(thisElement));
+
+  // thisElement = thisElement->getNextElementSibling();
+  // currentModifier->setPartialResultString(getFunctionString(thisElement));
 
   currentModifier->next = buildModifiersFromDOMElement(_thisModifierElement->getNextElementSibling());
   return currentModifier;
