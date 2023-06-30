@@ -85,7 +85,10 @@ void Note::setStartTime(int start_time) {
 void Note::setEndTime(int end_time) {
   end_t = end_time;
 }
-
+//----------------------------------------------------------------------------//
+void Note::initSplit(){
+  split = 0;
+}
 //----------------------------------------------------------------------------//
 
 void Note::setPitchWellTempered(int pitchNum) {
@@ -98,7 +101,7 @@ void Note::setPitchWellTempered(int pitchNum) {
   pitch_out = OutNames[octavePitch];
   string signs[8] = {",,,",",,",",","","'","''","'''","''''"};
   string sign = signs[octaveNum];
-  pitch_out = pitch_out + sign;
+  pitch_out = "<" + pitch_out + sign + ">";
 
 
   Output::addProperty("Pitch Number", pitchNum, "semitones");
@@ -206,11 +209,19 @@ bool is_attach_mark(string mod_name){
 //----------------------------------------------------------------------------//
 
 void Note::setModifiers(vector<string> modNames) {
-    for(int i = 0; i < modNames.size(); i++) {
+  for(int i = 0; i < modNames.size(); i++) {
     if (is_attach_mark(modNames[i])){
-    string temp = "\\" + modNames[i];
-    modifiers_out.push_back(temp);
+      string temp = "\\" + modNames[i];
+      modifiers_out.push_back(temp);
     }
+  }
+}
+
+//----------------------------------------------------------------------------//
+
+void Note::mergeModifiers(vector<string> modNames_out){
+  for(size_t i=0; i<modNames_out.size();i++){
+    modifiers_out.push_back(modNames_out.at(i));
   }
 }
 
