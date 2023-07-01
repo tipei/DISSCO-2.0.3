@@ -110,7 +110,6 @@ typedef enum{
   modifierTremolo = 0,
   modifierVibrato = 1,
   modifierGlissando = 2,
-  //modifierBend = 3,
   modifierDetune = 3,
   modifierAmptrans = 4,
   modifierFreqtrans = 5,

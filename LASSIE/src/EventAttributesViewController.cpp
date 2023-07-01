@@ -3853,6 +3853,9 @@ void BottomEventModifierAlignment::grayOutModifierFields(ModifierType type) {
   
   Gtk::Entry* entry;
 
+  attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+  entry->set_sensitive(false);
+
   if (type == modifierTremolo|| type == modifierVibrato) {
     attributesRefBuilder->get_widget("groupNameEntry", entry);
     entry->set_sensitive(true);
@@ -4118,8 +4121,8 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
   attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
   entry->set_text(modifier->getWidth());
 
-  // attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-  // entry->set_text(modifier->getPartialResultString());
+  attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+  entry->set_text(modifier->getPartialResultString());
 
   ModifierType type = modifier->getModifierType();
 
@@ -4151,9 +4154,9 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
   button->signal_clicked().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::widthEnvelopeButtonClicked));
 
   // // ADDED BY TEJUS : 11/27/21
-  //     attributesRefBuilder->get_widget(
-  //   "partialResultStringButton", button);
-  // button->signal_clicked().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::partialButtonClicked));
+      attributesRefBuilder->get_widget(
+    "partialResultStringButton", button);
+  button->signal_clicked().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::partialButtonClicked));
 
 
   attributesRefBuilder->get_widget(
@@ -4188,10 +4191,10 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
   entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
 
   // ADDED BY TEJUS
-  // attributesRefBuilder->get_widget(
-  //   "partialResultStringEntry", entry);
-  // // Not entirely sure where this goes?
-  // entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
+  attributesRefBuilder->get_widget(
+    "partialResultStringEntry", entry);
+  // Not entirely sure where this goes?
+  entry->signal_changed().connect(sigc::mem_fun(*this, & BottomEventModifierAlignment::modified));
 
   show_all_children();
 }
@@ -4318,8 +4321,8 @@ void BottomEventModifierAlignment::saveToEvent(){
 
   // ADDED BY TEJUS
   // Will have to change: partialNum should only be set when the box is not grayed out
-  // attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-  // modifier->setPartialResultString(entry->get_text());
+  attributesRefBuilder->get_widget("partialResultStringEntry", entry);
+  modifier->setPartialResultString(entry->get_text());
 
   ModifierType type = modifier->getModifierType();
 

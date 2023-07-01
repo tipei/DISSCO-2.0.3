@@ -1021,12 +1021,12 @@ void  EventBottomModifier::setDetuneVelocity(std::string _string){
 
 
 // ADDED BY TEJUS
-// std::string EventBottomModifier::getPartialResultString(){
-//   return partialResultString;
-// }
-// void  EventBottomModifier::setPartialResultString(string _string){
-//   partialResultString = _string;
-// }
+std::string EventBottomModifier::getPartialResultString(){
+  return partialResultString;
+}
+void  EventBottomModifier::setPartialResultString(string _string){
+  partialResultString = _string;
+}
 
 int EventBottomModifier::getModifierTypeInt(){
   // CHANGED BY TEJUS 10/3/2021
@@ -1039,9 +1039,6 @@ int EventBottomModifier::getModifierTypeInt(){
   else if (type == modifierGlissando){
     return 2;
   }
-  // else if (type ==  modifierBend){
-  //   return 3;
-  // }
   else if (type ==  modifierDetune){
     return 3;
   }
@@ -1094,17 +1091,6 @@ std::string EventBottomModifier::getSaveToDiskString(){
       ",\n                <\"MUT_EX\", \"" + groupName +
       "\">\n              >"));
   }
-  // else if (type == modifierBend){
-  //   stringbuffer ="              <\n"
-  //     "                \"BEND\",\n"
-  //     "                "+ probability + ",\n"
-  //     "                "+ ((applyHowFlag ==0)?"\"SOUND\",\n":"\"PARTIAL\",\n") +
-  //     "                "+ ampValue +
-  //     ((groupName ==""||groupName =="")?"\n              >":(
-  //     ",\n                <\"MUT_EX\", \"" +
-  //     groupName + "\">\n              >"));
-
-  // }
   else if (type == modifierDetune){
     stringbuffer ="              <\n"
       "                \"DETUNE\",\n"
@@ -1198,6 +1184,7 @@ std::string EventBottomModifier::getSaveLASSIEMetaDataString(){
 
 // CHANGED BY TEJUS: Add partial num to XML output 
 // Add partial result string to XML output
+
 std::string EventBottomModifier::getXMLString(){
 
   char temp1[10];
@@ -1218,7 +1205,7 @@ std::string EventBottomModifier::getXMLString(){
     "              <DetuneDirection>" + detuneDirection + "</DetuneDirection>\n"
     "              <DetuneVelocity>" + detuneVelocity + "</DetuneVelocity>\n"
     "              <GroupName>" + groupName + "</GroupName>\n"
-    // "              <PartialResultString>"+ partialResultString + "</PartialResultString>\n"
+    "              <PartialResultString>"+ partialResultString + "</PartialResultString>\n"
     "            </Modifier>\n";
   return stringbuffer;
 
