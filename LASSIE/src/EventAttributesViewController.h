@@ -107,6 +107,7 @@ protected:
 
   void on_applyHow_combo_changed();
   void on_type_combo_changed();
+  void grayOutModifierFields(ModifierType type);
   void removeModifierButtonClicked();
 
   void probablityEnvelopeButtonClicked();

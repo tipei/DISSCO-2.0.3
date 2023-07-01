@@ -3849,7 +3849,132 @@ void EventAttributesViewController::freqWellTemperedButtonClicked(){
 
 
 
+void BottomEventModifierAlignment::grayOutModifierFields(ModifierType type) {
+  
+  Gtk::Entry* entry;
 
+  if (type == modifierTremolo|| type == modifierVibrato) {
+    attributesRefBuilder->get_widget("groupNameEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("probablityEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("DirectionEntry", entry);
+    entry->set_sensitive(false);
+  } else if (type == modifierAmptrans || type == modifierFreqtrans) {
+    attributesRefBuilder->get_widget("groupNameEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("probablityEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("DirectionEntry", entry);
+    entry->set_sensitive(false);
+  } else if (type == modifierDetune) {
+    attributesRefBuilder->get_widget("groupNameEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("probablityEnvelopeEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("DirectionEntry", entry);
+    entry->set_sensitive(true);
+  } else if (type == modifierGlissando) {
+    attributesRefBuilder->get_widget("groupNameEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("probablityEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("DirectionEntry", entry);
+    entry->set_sensitive(false);
+  } else if (type == modifierWave_type) {
+    attributesRefBuilder->get_widget("groupNameEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("probablityEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
+    entry->set_sensitive(true);
+
+    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("SpreadEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("VelocityEntry", entry);
+    entry->set_sensitive(false);
+
+    attributesRefBuilder->get_widget("DirectionEntry", entry);
+    entry->set_sensitive(false);
+  } 
+}
 
 
 
@@ -3940,10 +4065,6 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
   row[typeColumns.m_col_type] = modifierGlissando;
   row[typeColumns.m_col_name] = "GLISSANDO";
 
-  // row = *(typeTreeModel->append());
-  // row[typeColumns.m_col_type] = modifierBend;
-  // row[typeColumns.m_col_name] = "BEND";
-
   row = *(typeTreeModel->append());
   row[typeColumns.m_col_type] = modifierDetune;
   row[typeColumns.m_col_name] = "DETUNE";
@@ -3975,79 +4096,35 @@ BottomEventModifierAlignment::BottomEventModifierAlignment(
 
   attributesRefBuilder->get_widget("groupNameEntry", entry);
   entry->set_text(modifier->getGroupName());
-  cout<<modifier->getGroupName();
 
   attributesRefBuilder->get_widget("probablityEnvelopeEntry", entry);
   entry->set_text(modifier->getProbability());
-  cout<<modifier->getProbability();
 
   attributesRefBuilder->get_widget("ampValueEnvelopeEntry", entry);
   entry->set_text(modifier->getAmpValue());
-  cout<<modifier->getAmpValue();
 
   attributesRefBuilder->get_widget("SpreadEntry", entry);
   entry->set_text(modifier->getDetuneSpread());
-  cout<<modifier->getDetuneSpread();
 
   attributesRefBuilder->get_widget("VelocityEntry", entry);
   entry->set_text(modifier->getDetuneVelocity());
-  cout<<modifier->getDetuneVelocity();
 
   attributesRefBuilder->get_widget("DirectionEntry", entry);
   entry->set_text(modifier->getDetuneDirection());
-  cout<<modifier->getDetuneDirection();
 
   attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
   entry->set_text(modifier->getRateValue());
-  cout<<modifier->getRateValue();
 
   attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
   entry->set_text(modifier->getWidth());
-  cout<<modifier->getWidth();
 
-  // ADDED BY TEJUS
-  // TODO: Set text, set_sensitive(false) to gray out the box
   // attributesRefBuilder->get_widget("partialResultStringEntry", entry);
   // entry->set_text(modifier->getPartialResultString());
-  // ModifierType type = modifier->getModifierType();
 
-    attributesRefBuilder->get_widget("SpreadEntry", entry);
-      entry->set_sensitive(false);
-      attributesRefBuilder->get_widget("DirectionEntry", entry);
-      entry->set_sensitive(false);
-      attributesRefBuilder->get_widget("VelocityEntry", entry);
-      entry->set_sensitive(false);
-       //attributesRefBuilder->get_widget("partialResultStringEntry", entry);
-      //entry->set_sensitive(false);
-  if (type == modifierAmptrans || type == modifierFreqtrans){
-    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-    entry->set_sensitive(true);
-    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-    entry->set_sensitive(true);
-  } else if (type == modifierTremolo|| type == modifierVibrato){
-    attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-    entry->set_sensitive(true);
-    attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-    entry->set_sensitive(false);
-  } else if (type == modifierDetune){
-      attributesRefBuilder->get_widget("SpreadEntry", entry);
-      entry->set_sensitive(true);
-      attributesRefBuilder->get_widget("DirectionEntry", entry);
-      entry->set_sensitive(true);
-      attributesRefBuilder->get_widget("VelocityEntry", entry);
-      entry->set_sensitive(true);
-      attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-     entry->set_sensitive(false);
-     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-     entry->set_sensitive(false);
-    }
-    else{
-     attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-     entry->set_sensitive(false);
-     attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-     entry->set_sensitive(false);
-  }
+  ModifierType type = modifier->getModifierType();
 
+      
+  grayOutModifierFields(type);
 
 
   Gtk::Button* button;
@@ -4176,54 +4253,8 @@ void BottomEventModifierAlignment::on_type_combo_changed(){
       ModifierType type = row[typeColumns.m_col_type];
       modifier->setModifierType(type);
       Gtk::Entry* entry;
-      attributesRefBuilder->get_widget("SpreadEntry", entry);
-      entry->set_sensitive(false);
-      attributesRefBuilder->get_widget("DirectionEntry", entry);
-      entry->set_sensitive(false);
-      attributesRefBuilder->get_widget("VelocityEntry", entry);
-      entry->set_sensitive(false);
-      
-      auto applyHow = modifier->getApplyHowFlag();
 
-      if (type == modifierAmptrans || type == modifierFreqtrans){
-        attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-        entry->set_sensitive(true);
-        attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-        entry->set_sensitive(true);
-      }
-      else if (type == modifierTremolo|| type == modifierVibrato){
-        attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-        entry->set_sensitive(true);
-        attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-        entry->set_sensitive(false);
-
-      } else if (type == modifierDetune){
-        attributesRefBuilder->get_widget("SpreadEntry", entry);
-        entry->set_sensitive(true);
-        attributesRefBuilder->get_widget("DirectionEntry", entry);
-        entry->set_sensitive(true);
-         attributesRefBuilder->get_widget("VelocityEntry", entry);
-        entry->set_sensitive(true);
-        attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-        entry->set_sensitive(false);
-        attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-        entry->set_sensitive(false);
-      }
-      else{
-        attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-        entry->set_sensitive(false);
-        attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-        entry->set_sensitive(false);
-
-      }
-
-      // if (type == modifierTremolo|| type == modifierVibrato){
-      //   attributesRefBuilder->get_widget("rateValueEnvelopeEntry", entry);
-      //   entry->set_sensitive(true);
-      //   attributesRefBuilder->get_widget("widthEnvelopeEntry", entry);
-      //   entry->set_sensitive(false);
-
-      // }
+      grayOutModifierFields(type);
     }
 
 
