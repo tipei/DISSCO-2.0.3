@@ -371,7 +371,8 @@ void Bottom::buildNote(SoundAndNoteWrapper* _soundNoteWrapper) {
   newNote->setEndTime(
     _soundNoteWrapper->ts.startEDU.To<int>() + 
       _soundNoteWrapper->ts.durationEDU.To<int>());
-
+  // Initialize the parameter split before the arrangement
+  newNote->initSplit();
   Output::notation_score_.RegisterTempo(tempo);
   Output::notation_score_.InsertNote(newNote);
 

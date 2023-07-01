@@ -93,7 +93,7 @@ bool Section::InsertNote(Note* n) {
   if (n->rootExactAncestor != time_signature_.tempo_.getRootExactAncestor()) {
     return false; // Note does not belong to this section.
   }
-
+  //initialize n
   n->type_out = "";
   n->type = NoteType::kNote;
   is_built_ = false;
@@ -111,43 +111,121 @@ bool Section::InsertNote(Note* n) {
   }
 
   int end = n->end_t / time_signature_.bar_edus_;
-  // if note is completely inside the bar, insert it
-  if(end <= bar_num) {
-    vector<Note*>::iterator iter;
-    for (iter = section_[bar_num].begin(); 
-         iter != section_[bar_num].end(); 
-         iter++) {
-      Note* cur = *iter;
-      if (cur->start_t > n->start_t) {
-        section_[bar_num].insert(iter, n);
-        return true;
-      }
-    }
-    section_[bar_num].insert(iter, n);
-  } else { // split note exceeding barline
+
+  // if note is out of a bar time
+  if(end > bar_num){
     Note* second = new Note(*n);
     second->start_t = (bar_num + 1) * time_signature_.bar_edus_;
     n->end_t = (bar_num + 1) * time_signature_.bar_edus_;
     n->split = 1;
-
-    vector<Note*>::iterator iter;
-    for (iter = section_[bar_num].begin();
-         iter != section_[bar_num].end();
-         iter++) {
-      Note* cur = *iter;
-      if (cur->start_t > n->start_t) {
-        section_[bar_num].insert(iter, n);
-        InsertNote(second);
+    if(second->end_t == second->start_t){
+      n->split = 0;
+    }
+    InsertNote(second);
+  }
+  // now note is completely inside the bar, insert it
+  vector<Note*>::iterator iter;
+  for ( iter = section_[bar_num].begin(); 
+        iter != section_[bar_num].end(); 
+        iter++) {
+    Note* cur = *iter;
+    // if there is no pitch in this bar
+    // if there is no overlap
+    if(cur->start_t >= n->end_t){
+      section_[bar_num].insert(iter, n);
+      return true;
+    }
+    else if(cur->start_t == n->start_t){
+      if(cur->end_t == n->end_t){
+        cur->split = n->split;
+        cur->mergeModifiers(n->modifiers_out);
+        cur->pitch_out = cur->pitch_out.substr(0, cur->pitch_out.length() - 1) + n->pitch_out.substr(1);
+        return true;
+      }
+      else if (cur->end_t > n->end_t){
+        cur->start_t = n->end_t;
+        n->split = 1;
+        n->mergeModifiers(cur->modifiers_out);
+        n->pitch_out = cur->pitch_out.substr(0, cur->pitch_out.length() - 1) + n->pitch_out.substr(1);
+        InsertNote(n);
+        return true;
+      }
+      else if(cur->end_t < n->end_t){
+        if(cur->start_t != cur->end_t){
+          cur->split = 1;
+          cur->mergeModifiers(n->modifiers_out);
+          cur->pitch_out = cur->pitch_out.substr(0, cur->pitch_out.length() - 1) + n->pitch_out.substr(1);
+          n->start_t = cur->end_t;
+        }
+      }
+    }
+    else if ((cur->end_t > n->start_t) && (cur->start_t < n->start_t)){
+      if(cur->end_t == n->end_t){
+        cur->split =1;
+        cur->end_t = n->start_t;
+        n->mergeModifiers(cur->modifiers_out);
+        n->pitch_out = cur->pitch_out.substr(0, cur->pitch_out.length() - 1) + n->pitch_out.substr(1);
+      }
+      else if (cur->end_t > n->end_t){
+        Note* sec_chord = new Note(*cur);
+        cur->end_t = n->start_t;
+        cur->split = 1;
+        sec_chord->start_t = n->end_t;
+        n->split = 1;
+        n->mergeModifiers(cur->modifiers_out);
+        n->pitch_out = cur->pitch_out.substr(0, cur->pitch_out.length() - 1) + n->pitch_out.substr(1);
+        InsertNote(sec_chord);
+        InsertNote(n);
+        return true;
+      }
+      else if (cur->end_t < n->end_t){
+        Note* sec_chord = new Note(*n);
+        sec_chord->end_t = cur->end_t;
+        sec_chord->mergeModifiers(cur->modifiers_out);
+        sec_chord->pitch_out = cur->pitch_out.substr(0, cur->pitch_out.length() - 1) + n->pitch_out.substr(1);
+        sec_chord->split = 1;
+        cur->end_t = sec_chord->start_t;
+        cur->split = 1;
+        n->start_t = sec_chord->end_t;
+        InsertNote(sec_chord);
+        InsertNote(n);
         return true;
       }
     }
-    
-    section_[bar_num].insert(iter, n);
-    InsertNote(second);
+    else if ((cur->start_t > n->start_t) && (cur->start_t < n->end_t)){
+      if(cur->end_t == n->end_t){
+        cur->split = n->split;
+        cur->mergeModifiers(n->modifiers_out);
+        cur->pitch_out = cur->pitch_out.substr(0, cur->pitch_out.length() - 1) + n->pitch_out.substr(1);
+        n->end_t = cur->start_t;
+        n->split = 1;
+        InsertNote(n);
+        return true;
+      }
+      else if(cur->end_t > n->end_t){
+        Note* sec_chord = new Note(*cur);
+        sec_chord->start_t = n->end_t;
+        cur->end_t = n->end_t;
+        cur->split = 1;
+        InsertNote(n);
+        InsertNote(sec_chord);
+        return true;
+      }
+      else if(cur->end_t < n->end_t){
+        Note* sec_chord = new Note(*n);
+        sec_chord->start_t = cur->end_t;
+        n->end_t = cur->end_t;
+        n->split = 1;
+        InsertNote(n);
+        InsertNote(sec_chord);
+        return true;
+      }
+      
+    }
   }
-
+  section_[bar_num].insert(iter, n);
   return true;
-}
+} 
 
 void Section::SetDurationEDUS(int edus) {
   if (edus == -1) {
@@ -604,7 +682,9 @@ int Section::CreateTupletWithRests(Note* current_note,
     NoteInTuplet(current_note, tuplet_type, remaining_dur);
     tuplet_dur = time_signature_.beat_edus_ - remaining_dur;
   }
-
+  if(current_note->split == 1){
+    current_note->type_out += "~ ";
+  }
   *prev_tuplet = tuplet_type;
   return tuplet_dur;
 }

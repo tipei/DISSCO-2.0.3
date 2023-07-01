@@ -127,6 +127,10 @@ class Note {
      * Set the end time of this Note in EDUs.
     **/
     void setEndTime(int end_time);
+    /**
+     * Init the split of this Note in EDUs.
+    **/
+    void initSplit();
 
     /**
      *  Assigns the pitch of a note
@@ -173,6 +177,7 @@ class Note {
      *  \param modNames
      **/
     void setModifiers(std::vector<std::string> modNames);
+    void mergeModifiers(std::vector<std::string> modNames_out);
 
     /**
      * Get the text associated with this Note.
