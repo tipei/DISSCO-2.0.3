@@ -52,6 +52,7 @@ Sound::Sound(int numPartials, m_value_type baseFreq)
 {
     
     spatializer_ = new Spatializer();
+    spa_modified_ = false; /* ZIYUAN CHEN, July 2023 */
     if (numPartials < 1)
     {
         cerr << "ERROR: Sound: Creation with less than 1 partial." << endl;
@@ -252,34 +253,42 @@ MultiTrack* Sound::render(
     m_sample_count_type sampleCount;
     sampleCount = (m_sample_count_type) ((m_time_type)getTotalDuration() * (m_time_type)samplingRate);
 
-    Track* composite;
+    /* ZIYUAN CHEN, July 2023: Partial::render() now returns (potentially spatialized) MultiTracks */
+    MultiTrack* composite;
 
     if (size() == 0)
     {
         // there are no partials
-        // create a new empty track:
-        composite = new Track(sampleCount, samplingRate);
+        // create a new empty MultiTrack:
+        composite = new MultiTrack(numChannels, sampleCount, samplingRate);
         // should we zero this memory out?
     }
     else
     {
         Iterator<Partial> iter = iterator();
-        composite = iter.next().render(sampleCount, duration, samplingRate);
+        composite = iter.next().render(numChannels, sampleCount, duration, samplingRate);
 
-        Track* tempTrack;
+        MultiTrack* tempTrack;
         while(iter.hasNext())
         {
-            tempTrack = iter.next().render(sampleCount, duration, samplingRate);
+            tempTrack = iter.next().render(numChannels, sampleCount, duration, samplingRate);
             composite->composite(*tempTrack);
             delete tempTrack;
         }
     }
   
+    /* Chain of Conversion:
+     * Track ---do_reverb_Track-->       Track        in Partial::render()
+     * ...   ---spatialize_Track-->      MultiTrack   in Partial::render()
+     * ...   ---do_filter_MultiTrack-->  MultiTrack   in Sound::render()
+     * ...   ---do_reverb_MultiTrack-->  MultiTrack   in Sound::render()
+     * ...   ---spatialize_MultiTrack--> MultiTrack   in Sound::render()
+     */
   
     // do the filter
     if (filterObj != NULL){
       cout << "\t Applying Filter..." << endl;
-      Track &filteredTrack = filterObj->do_filter_Track(*composite);
+      MultiTrack &filteredTrack = filterObj->do_filter_MultiTrack(*composite);
 		delete composite;
 		composite = &filteredTrack;
     }
@@ -288,15 +297,27 @@ MultiTrack* Sound::render(
     // do the reverb
     if (reverbObj != NULL) {
       cout << "\t Applying Reverb..." << endl;
-      Track &reverbedTrack = reverbObj->do_reverb_Track(*composite);
+      MultiTrack &reverbedTrack = reverbObj->do_reverb_MultiTrack(*composite);
       delete composite;
 
 	//------------------
 	// spatialize the sound into a MultiTrack object
 	//------------------
 
+  /* ZIYUAN CHEN, July 2023: On the default behavior of spatialization (Sound side)
+   *   If a non-placeholder subclass of Spatializer (Pan/MultiPan) is set in the partials,
+   *     "spatializer_" in the sound will be a placeholder and should be IGNORED.
+   *   Otherwise, (indirectly) calling Spatializer::spatialize_Track() will cause each
+   *     track to be averaged across all channels (default placeholder behavior) and
+   *     OVERWRITE any spatialization performed by the partials!
+   *   Compare Partial::render().
+   */
 	cout << "\t Spatializing..." << endl;
-	MultiTrack* mt = spatializer_->spatialize(reverbedTrack, numChannels);
+
+	if (!spa_modified_)
+		return &reverbedTrack;
+
+	MultiTrack* mt = spatializer_->spatialize_MultiTrack(reverbedTrack, numChannels, sampleCount, samplingRate);
 
 	// delete the temporary track object that held the unspatialized reverbed sound
 	delete &reverbedTrack;
@@ -309,8 +330,13 @@ MultiTrack* Sound::render(
 	// spatialize the sound into a MultiTrack object
 	//------------------
 
+  /* ZIYUAN CHEN, July 2023 - See above */
 	cout << "\t Spatializing..." << endl;
-	MultiTrack* mt = spatializer_->spatialize(*composite, numChannels);
+
+	if (!spa_modified_)
+		return composite;
+
+	MultiTrack* mt = spatializer_->spatialize_MultiTrack(*composite, numChannels, sampleCount, samplingRate);
 	delete composite;
 	return mt;
       }
@@ -321,6 +347,7 @@ void Sound::setSpatializer(Spatializer& s)
 {
     delete spatializer_;
     spatializer_ = s.clone();
+    spa_modified_ = true;
 }
 
 //----------------------------------------------------------------------------//

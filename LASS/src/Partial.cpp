@@ -54,11 +54,13 @@ Partial::Partial()
     setParam(FREQTRANS_WIDTH, 1103);
 
     reverbObj = NULL;
+    spatializer_ = new Spatializer();
 }
 
 
 //----------------------------------------------------------------------------//
-Track* Partial::render(m_sample_count_type sampleCount,
+MultiTrack* Partial::render(int numChannels,
+                       m_sample_count_type sampleCount,
                        m_time_type duration,
                        m_rate_type samplingRate)
 {
@@ -352,19 +354,31 @@ Track* Partial::render(m_sample_count_type sampleCount,
     }
 
     // create a TrackObject:
-    Track *returnTrack = new Track(waveSample, ampSample);
+    Track *_track = new Track(waveSample, ampSample);
 
     // do the reverb, if necessary
     if(reverbObj != NULL)
     {
-        Track &tmp = reverbObj->do_reverb_Track(*returnTrack);
-        delete returnTrack;
-        returnTrack = new Track(tmp);
+        Track &tmp = reverbObj->do_reverb_Track(*_track);
+        delete _track;
+        _track = new Track(tmp);
 
         // delete the temporary track object
         delete &tmp;
 
     }
+
+    /* ZIYUAN CHEN, July 2023: On the default behavior of spatialization (Partial side)
+     *   If a non-placeholder subclass of Spatializer (Pan/MultiPan) is set in the sound,
+     *     "spatializer_" in the partials will be placeholders that merely averages the
+     *     sound evenly accross all tracks.
+     *   But unlike Sound::render(), the placeholders are NOT IGNORED since they are essential
+     *     for transforming Track to MultiTrack, whose channels uniformly hold scaled versions
+     *     of the original Track.
+     *   Compare Sound::render().
+     */
+    MultiTrack* returnTrack = spatializer_->spatialize_Track(*_track, numChannels);
+
 //cout << "Partial::render - frequency after detune:" << getParam(FREQ_ENV).getMaxValue() << endl;
 //  cout<< "--------------------------------------------"<< endl;
 
@@ -388,6 +402,14 @@ inline m_value_type Partial::pmod(m_value_type num)
     return num;
 }
 
+
+//----------------------------------------------------------------------------//
+/* ZIYUAN CHEN, July 2023 */
+void Partial::setSpatializer(Spatializer& s)
+{
+    delete spatializer_;
+    spatializer_ = s.clone();
+}
 
 //----------------------------------------------------------------------------//
 void Partial::use_reverb(Reverb *newReverbObj)
@@ -419,6 +441,7 @@ void Partial::xml_print( ofstream& xmlOutput, list<Reverb*>& revObjs, list<Dynam
                 revObjs.push_back( reverbObj );
         }
 
+	spatializer_->xml_print( xmlOutput );
 
 	// Static Parameters
 	xmlOutput << "\t\t\t<relative_amplitude value=\"" << getParam(RELATIVE_AMPLITUDE) << "\" />" << endl;

@@ -266,6 +266,29 @@ class Bottom : public Event {
      **/
     void rules(int numPartials, float ampScale[]);
 
+    /** ZIYUAN CHEN, July 2023
+     *  Computes a Pan for applying spatializationStereo to a sound.
+     *  \param envstr transcoded envelope string to be applied
+     *  \return a Pan object parameterized by the envelope
+     **/
+    Pan computeSpatializationStereo(string envstr);
+
+    /** ZIYUAN CHEN, July 2023
+     *  Computes a MultiPan for applying spatializationMultiPan to a sound.
+     *  \param mult a list of envelopes to be applied
+     *  \return a MultiPan object associated with the designated partial
+     **/
+    MultiPan computeSpatializationMultiPan(vector<Envelope*> mult);
+
+    /** ZIYUAN CHEN, July 2023
+     *  Computes a MultiPan for applying spatializationPolar to a sound.
+     *  \param thetaEnvStr transcoded "theta" envelope string to be applied
+     *  \param radiusEnvStr transcoded "radius" envelope string to be applied
+     *  \return a MultiPan object with 100 entry locations
+     *     parameterized by theta and radius
+     **/
+    MultiPan computeSpatializationPolar(string thetaEnvStr, string radiusEnvStr);
+
 //----------------------------------------------------------------------------//
 
     /**

@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Types.h"
 #include "ParameterLib.h"
 #include "Track.h"
+#include "Spatializer.h"
 #include "Reverb.h"
 
 //----------------------------------------------------------------------------//
@@ -175,18 +176,30 @@ public:
 	 **/
 	Partial();
     
-	/**
-	 * This returns a Track object of the rendered partial.
+	/** ZIYUAN CHEN, July 2023
+	 * This returns a MultiTrack object of the rendered partial.
+	 * (In the former version, it returned a Track object, which is
+	 * then added together in Sound::render(). But spatializing the
+	 * partials independently calls for a MultiTrack for each.)
 	 * The object must be deleted by the user calling the function.
 	 * \param sampleCount The number of samples
+     * \param numChannels The number of channels in the MultiTrack
 	 * \param duration The duration
 	 * \param samplingRate The sampling rate
 	 * \return A Track
 	**/
-	Track* render(m_sample_count_type sampleCount,
+	MultiTrack* render(int numChannels,
+		m_sample_count_type sampleCount,
 		m_time_type duration,
 		m_rate_type samplingRate = DEFAULT_SAMPLING_RATE);
 
+    /** ZIYUAN CHEN, July 2023
+    *	This function sets the Spatializer used for this partial.
+    *	The given parameter is copied into this object's memory.
+    *	\param s The Spatializer to use
+    **/
+    void setSpatializer(Spatializer& s);
+    
 	/**
 	 *   Use this object to perform reverb in the render() method
 	 *   \param newReverbObj A pointer to a Reverb object
@@ -228,6 +241,9 @@ private:
 
 	/** A Reverb object **/
 	Reverb *reverbObj;
+
+	/** A Spatializer object **/
+	Spatializer* spatializer_;
 
 };
 

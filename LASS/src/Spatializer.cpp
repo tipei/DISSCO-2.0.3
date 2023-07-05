@@ -38,7 +38,7 @@ Spatializer::~Spatializer(){
   // nothing to do
 }
 
-MultiTrack* Spatializer::spatialize(Track& t, int numTracks)
+MultiTrack* Spatializer::spatialize_Track(Track& t, int numTracks)
 {
 
 
@@ -56,6 +56,29 @@ MultiTrack* Spatializer::spatialize(Track& t, int numTracks)
     
     // delete the scaled track
     delete scaledTrack;
+    
+    // return:
+    return mt;
+}
+
+/* ZIYUAN CHEN, July 2023 */
+MultiTrack* Spatializer::spatialize_MultiTrack(MultiTrack& t, int numTracks,
+                       m_sample_count_type sampleCount,
+                       m_rate_type samplingRate)
+{
+    // create a new multitrack:
+    MultiTrack* mt = new MultiTrack(numTracks, sampleCount, samplingRate);
+
+    // this temporary multitrack holds each spatialized "component"
+    MultiTrack* _tmp = new MultiTrack(numTracks, sampleCount, samplingRate);
+    
+    // superimpose each component to the output multitrack
+    Iterator<Track*> it = t.iterator();
+    while (it.hasNext())
+    {
+        _tmp = spatialize_Track( *(it.next()), numTracks );
+        mt->composite( *_tmp );
+    }
     
     // return:
     return mt;

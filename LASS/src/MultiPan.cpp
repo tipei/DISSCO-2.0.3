@@ -340,7 +340,7 @@ void MultiPan::addEntryLocation(float t, float theta, float radius)
  *  have to pass in nChans in the constructor)
  * @return the track, spatialized to 'numTracks' number of tracks
  **/
-MultiTrack* MultiPan::spatialize(Track& t, int numTracks)
+MultiTrack* MultiPan::spatialize_Track(Track& t, int numTracks)
 {
 	m_sample_count_type sampleCount = t.getWave().getSampleCount();
 	m_rate_type samplingRate = t.getWave().getSamplingRate();

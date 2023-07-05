@@ -138,6 +138,7 @@ class Sound
 {
 private:
     Spatializer* spatializer_;
+    bool spa_modified_; /* ZIYUAN CHEN, July 2023 */
 
 public:
 

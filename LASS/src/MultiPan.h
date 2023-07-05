@@ -135,7 +135,7 @@ public:
 	 *  have to pass in nChans in the constructor)
 	 * \return the track, spatialized to 'numTracks' number of tracks
 	 **/
-	MultiTrack* spatialize(Track& t, int numTracks);
+	MultiTrack* spatialize_Track(Track& t, int numTracks);
 
 	/**
 	* \deprecated

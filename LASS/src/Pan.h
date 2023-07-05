@@ -80,7 +80,7 @@ public:
     *	\param numTracks The number of tracks
     *	\return A pointer to a new MultiTrack
     **/
-    MultiTrack* spatialize(Track& t, int numTracks);
+    MultiTrack* spatialize_Track(Track& t, int numTracks);
 
 	/** 
 	* \deprecated

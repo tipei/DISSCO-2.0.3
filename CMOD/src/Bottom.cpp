@@ -580,22 +580,54 @@ void Bottom::spatializationStereo(Sound *s,
 //  </Channels>
 
   DOMElement* envelopeElement = _channels->GFEC()->GFEC();
-  Envelope* panning = (Envelope*) utilities->evaluateObject(XMLTC(envelopeElement),(void*)this, eventEnv );
+  string envstr;
 
-  Pan stereoPan(*panning); // cavis +1
-  s->setSpatializer(stereoPan);
-  delete panning;
+  if (applyHow == "SOUND") {
+    envstr = XMLTC(envelopeElement);
+    if (envstr == "") {
+      cerr << "WARNING: spatializationStereo got empty envelope for sound; ignoring" << endl;
+        // ^ this cannot be wrapped into computeSpatializationStereo
+        // since returning an empty Pan object is ambiguous
+        // but refactoring the function to return a pointer introduces memory hazards
+    } else {
+      Pan stereoPan = computeSpatializationStereo(envstr);
+      s->setSpatializer(stereoPan);
+      cout << "writing" << endl;
+    }
+  }
 
-  if (applyHow == "PARTIAL") {
-    //this isn't implemented in LASS yet, so we can't do it here
-    cerr << "Sorry, applying spatialization by PARTIAL not supported yet" << endl;
+  else if (applyHow == "PARTIAL") {
+    for (int i = 0; i < numParts; i++) {
+      envstr = XMLTC(envelopeElement);
+      if (envstr == "") {
+        cerr << "WARNING: spatializationStereo got empty envelope for partial " << i << "; ignoring" << endl;
+      } else {
+        Pan stereoPan = computeSpatializationStereo(envstr);
+        s->get(i).setSpatializer(stereoPan);
+        // ^ this cannot be wrapped into computeSpatializationStereo
+        // since Sound and Partial does not inherit each other
+      }
+      envelopeElement = envelopeElement->GNES();
+    }
 
   }
-  else if (applyHow != "SOUND"){
+  else {
     cerr << "Error: " << applyHow << " is an invalid way to apply spatialization! "
          << "Use SOUND or PARTIAL" << endl;
 
   }
+
+}
+
+//----------------------------------------------------------------------------//
+
+/* ZIYUAN CHEN, July 2023 */
+Pan Bottom::computeSpatializationStereo(string envstr) {
+
+  Envelope* panning = (Envelope*)utilities->evaluateObject(envstr, (void*)this, eventEnv);
+  Pan stereoPan(*panning);
+  delete panning;
+  return stereoPan;
 
 }
 
@@ -608,43 +640,92 @@ void Bottom::spatializationMultiPan(Sound *s,
 
 
 //  <Channels>
-//    <Partials>
+//    <Partials> <!-- channel 1 -->
 //      <P><Fun><Name>EnvLib</Name><Env>2</Env><Scale>1.0</Scale></Fun></P>
 //    </Partials>
-//    <Partials>
+//    <Partials> <!-- channel 2 -->
 //      <P><Fun><Name>EnvLib</Name><Env>2</Env><Scale>1.0</Scale></Fun></P>
 //    </Partials>
-//    <Partials>
+//    <Partials> <!-- channel 3 -->
 //      <P><Fun><Name>EnvLib</Name><Env>2</Env><Scale>1.0</Scale></Fun></P>
 //    </Partials>
 //  </Channels>
 
-  vector<Envelope*> mult;
+  vector< vector<Envelope*> > mults;
+  vector<bool> isPartialValid;
+  string envstr;
   Envelope* env;
   DOMElement* partials = _channels->GFEC();
+  DOMElement* envElement;
+
+  int j; // index of partials
+
+  // populate mults, essentially "transposing" the grid of envelopes
   while (partials!=NULL){
-    env = (Envelope*)utilities->evaluateObject(XMLTC(partials->GFEC()), (void*)this,eventEnv);
-    mult.push_back(env);
+    envElement = partials->GFEC();
+    j = 0;
+    while (envElement != NULL) { // for each partial
+      if (j >= mults.size()) {
+        // populate mults with "bins", only effective in the first go
+        mults.push_back(vector<Envelope*>());
+        isPartialValid.push_back(true); // initialize the flags
+      }
+      envstr = XMLTC(envElement);
+      if (envstr == "") {
+        isPartialValid.at(j) = false; // missing one channel disables the entire partial
+      } else {
+        env = (Envelope*)utilities->evaluateObject(envstr, (void*)this, eventEnv);
+        mults.at(j).push_back(env);
+      }
+      envElement = envElement->GNES();
+      j++;
+    }
     partials = partials->GNES();
   }
 
-  MultiPan multipan(mult.size(), mult);
-  s->setSpatializer(multipan);
+  if (applyHow == "SOUND") {
+    if (isPartialValid.at(0) == false) {
+      cerr << "WARNING: spatializationMultiPan got empty envelope for sound; ignoring" << endl;
+      return;
+    }
+    MultiPan multipan = computeSpatializationMultiPan(mults.at(0));
+    s->setSpatializer(multipan);
 
-  for (int i = 0; i < mult.size(); i ++){
-    delete mult[i];
+  } else if (applyHow == "PARTIAL") {
+    for (int i = 0; i < numParts; i++) { // apply multipan to each partial
+      if (i >= mults.size()){
+        cout << "WARNING: spatializationMultiPan got empty envelopes for partial " << i << " and onwards; ignoring" << endl;
+        break;
+      }
+      if (isPartialValid.at(i) == false) {
+        cerr << "WARNING: spatializationMultiPan got empty envelope for partial " << i << "; ignoring" << endl;
+        continue;
+      }
+      MultiPan multipan = computeSpatializationMultiPan(mults.at(i));
+      s->get(i).setSpatializer(multipan);
+    }
+
   }
-
-  if (applyHow == "PARTIAL") {
-    //this isn't implemented in LASS yet, so we can't do it here
-    cerr << "Sorry, applying spatialization by PARTIAL not supported yet" << endl;
-
-  }
-  else if (applyHow != "SOUND"){
+  else {
     cerr << "Error: " << applyHow << " is an invalid way to apply spatialization! "
          << "Use SOUND or PARTIAL" << endl;
 
   }
+}
+
+//----------------------------------------------------------------------------//
+
+/* ZIYUAN CHEN, July 2023 */
+MultiPan Bottom::computeSpatializationMultiPan(vector<Envelope*> mult) {
+
+  MultiPan multipan(mult.size(), mult);
+
+  for (int i = 0; i < mult.size(); i++) {
+    delete mult[i];
+  }
+
+  return multipan;
+
 }
 
 //----------------------------------------------------------------------------//
@@ -662,13 +743,54 @@ void Bottom::spatializationPolar(Sound *s,
 //  </Partials>
 //</Channels>
 
-  Envelope* thetaEnv;
-  Envelope* radiusEnv;
   DOMElement* thetaElement = _channels->GFEC()->GFEC();
   DOMElement* radiusElement = _channels->GFEC()->GNES()->GFEC();
+  string theta, radius;
 
-  thetaEnv = (Envelope*)utilities->evaluateObject(XMLTC(thetaElement), (void*)this,eventEnv);
-  radiusEnv = (Envelope*)utilities->evaluateObject(XMLTC(radiusElement), (void*)this,eventEnv);
+  if (applyHow == "SOUND") {
+    theta = XMLTC(thetaElement);
+    radius = XMLTC(radiusElement);
+    if (theta == "" || radius == "") {
+      cerr << "WARNING: spatializationPolar got empty envelope for sound; ignoring" << endl;
+    } else {
+      MultiPan multipan = computeSpatializationPolar(theta, radius);
+      s->setSpatializer(multipan);
+    }
+  }
+
+  else if (applyHow == "PARTIAL") {
+    for (int i = 0; i < numParts; i++) {
+      theta = XMLTC(thetaElement);
+      radius = XMLTC(radiusElement);
+      if (theta == "" || radius == "") {
+        cerr << "WARNING: spatializationPolar got empty envelope for partial " << i << "; ignoring" << endl;
+      } else {
+        MultiPan multipan = computeSpatializationPolar(theta, radius);
+        s->get(i).setSpatializer(multipan);
+      }
+      thetaElement = thetaElement->GNES();
+      radiusElement = radiusElement->GNES();
+    }
+
+  }
+  else {
+    cerr << "Error: " << applyHow << " is an invalid way to apply spatialization! "
+         << "Use SOUND or PARTIAL" << endl;
+
+  }
+
+}
+
+//----------------------------------------------------------------------------//
+
+/* ZIYUAN CHEN, July 2023 */
+MultiPan Bottom::computeSpatializationPolar(string thetaEnvStr, string radiusEnvStr) {
+
+  Envelope* thetaEnv;
+  Envelope* radiusEnv;
+
+  thetaEnv = (Envelope*)utilities->evaluateObject(thetaEnvStr, (void*)this,eventEnv);
+  radiusEnv = (Envelope*)utilities->evaluateObject(radiusEnvStr, (void*)this,eventEnv);
 
   MultiPan multipan(utilities->getNumberOfChannels());
   float time, theta, radius;
@@ -692,9 +814,10 @@ void Bottom::spatializationPolar(Sound *s,
 
     multipan.doneAddEntryLocation();
 
-    s->setSpatializer(multipan);
   delete thetaEnv;
   delete radiusEnv;
+
+  return multipan;
 
 }
 
