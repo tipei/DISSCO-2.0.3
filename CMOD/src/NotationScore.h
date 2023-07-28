@@ -49,14 +49,19 @@ public:
    * 
    * @param score_title The title of this score
   **/
-  NotationScore(const string& score_title);
+  // NotationScore(const string& score_title);
+  // multistaffs
+  NotationScore(const string& score_title,bool grandStaff, int numberOfStaff);
 
   /**
    * Insert a Tempo into this score.
    * 
    * @param tempo The tempo to insert
   **/
-  void RegisterTempo(Tempo& tempo);
+  // void RegisterTempo(Tempo& tempo);
+  // multistaffs
+  void RegisterTempo(Tempo& tempo, int numberOfStaff);
+
 
   /**
    * Insert a Note into this score.
@@ -100,7 +105,11 @@ private:
   string score_title_;
 
   vector<Section> score_;
+  vector< vector <Section> > score_staff;
   bool is_built_;
+  bool is_grand;
+  // the total number of staffs
+  int staffSum;
 };
 
 #endif
