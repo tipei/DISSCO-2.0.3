@@ -88,7 +88,7 @@ time to change this.
     delete cap_;
   }
 }
-
+// This function is rewrote by xiaoyi han
 bool Section::InsertNote(Note* n) {
   if (n->rootExactAncestor != time_signature_.tempo_.getRootExactAncestor()) {
     return false; // Note does not belong to this section.
