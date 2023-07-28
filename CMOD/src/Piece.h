@@ -131,6 +131,8 @@ class Piece {
 
   bool soundSynthesis;
   bool scorePrinting;
+  bool grandStaff;
+  int numberOfStaff;
   int numChannels;
   int sampleRate;
   int sampleSize;

@@ -371,9 +371,14 @@ class Bottom : public Event {
     /**
      *  Apply modifiers for a note.
      **/
-//  vector<string> applyNoteModifiers();
+    //  vector<string> applyNoteModifiers();
     vector<string> applyNoteModifiers(DOMElement* _playingMethods);
     vector<string> applyNoteModifiersOld();
+    // multistaffs
+    /**
+     *  Apply staff for a note.
+     **/
+    // int applyNoteStaffs(DOMElement* _playingMethods);
 
 };
 #endif
