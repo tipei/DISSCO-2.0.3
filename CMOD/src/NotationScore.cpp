@@ -205,8 +205,9 @@ ostream& operator<<(ostream& output_stream,
 
   // Staffs
   if(notation_score.is_grand){
-    output_stream << "\\new GrandStaff <<" << endl;
+    output_stream << "\\new GrandStaff " << endl;
   }
+  output_stream << " << " << endl;
   cout << "staffSum:" << notation_score.staffSum << endl;
   for(int i=0;i<notation_score.staffSum; i++){
     output_stream << "\\new Staff" << endl;
@@ -248,9 +249,10 @@ ostream& operator<<(ostream& output_stream,
     output_stream << "}" << endl;
   }
 
-  if(notation_score.is_grand){
-    output_stream << ">>" << endl;
-  }
+  // if(notation_score.is_grand){
+  //   output_stream << ">>" << endl;
+  // }
+  output_stream << ">>" << endl;
 
   return output_stream;
 }
